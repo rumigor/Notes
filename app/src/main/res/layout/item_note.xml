@@ -3,10 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginEnd="4dp"
-    android:layout_marginStart="4dp"
-    android:layout_marginTop="4dp"
-    android:layout_marginBottom="4dp"
+    android:layout_marginEnd="@dimen/cardViewMargin"
+    android:layout_marginStart="@dimen/cardViewMargin"
+    android:layout_marginTop="@dimen/cardViewMargin"
+    android:layout_marginBottom="@dimen/cardViewMargin"
     tools:backgroundTint="@android:color/holo_purple">
 
     <LinearLayout
@@ -19,9 +19,9 @@
             style="@style/TextAppearance.AppCompat.Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginEnd="@dimen/margin"
+            android:layout_marginStart="@dimen/margin"
+            android:layout_marginTop="@dimen/margin"
             tools:text="Geekbrains + Kotlin forever"/>
 
         <TextView
@@ -29,7 +29,7 @@
             style="@style/TextAppearance.AppCompat"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_margin="@dimen/margin"
             tools:text="Я Kotlin бы выучил только за то, что на нем разрабатывал Вортон!"/>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

@@ -2,10 +2,13 @@ package com.lenecoproekt.notes.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.lenecoproekt.notes.R
 import com.lenecoproekt.notes.databinding.ActivityMainBinding
+import com.lenecoproekt.notes.model.Note
+import com.lenecoproekt.notes.model.Repository
 import com.lenecoproekt.notes.viewmodel.MainViewModel
 
 class MainActivity : AppCompatActivity() {
@@ -20,10 +23,20 @@ class MainActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         adapter = MainAdapter()
         ui.mainRecycler.adapter = adapter
-        viewModel.viewState().observe(this, Observer { state ->
+
+        viewModel.viewState().observe(this, { state ->
             state?.let { adapter.notes = state.notes }
 
         })
-
+        ui.addNote.setOnClickListener {
+            Repository.notes.add(
+                Note(
+                    "Новая добавленная заметка",
+                    "Эта заметка добавлена с помощью кнопки",
+                    0xfff01292.toInt()
+                ),
+            )
+            adapter.notifyDataSetChanged()
+        }
     }
 }
