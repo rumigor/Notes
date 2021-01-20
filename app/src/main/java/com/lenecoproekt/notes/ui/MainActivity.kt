@@ -1,9 +1,11 @@
 package com.lenecoproekt.notes.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import androidx.lifecycle.Observer
+import android.view.ContextMenu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.lenecoproekt.notes.R
 import com.lenecoproekt.notes.databinding.ActivityMainBinding
@@ -15,6 +17,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var ui: ActivityMainBinding
     lateinit var viewModel: MainViewModel
     lateinit var adapter: MainAdapter
+    private var mCurrentItemPosition = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ui = ActivityMainBinding.inflate(layoutInflater)
@@ -38,5 +41,22 @@ class MainActivity : AppCompatActivity() {
             )
             adapter.notifyDataSetChanged()
         }
+//        registerForContextMenu(ui.mainRecycler)
+
+
     }
+
+//    override fun onCreateContextMenu(
+//        menu: ContextMenu?,
+//        v: View?,
+//        menuInfo: ContextMenu.ContextMenuInfo?
+//    ) {
+//        super.onCreateContextMenu(menu, v, menuInfo)
+//        val inflater: MenuInflater = menuInflater
+//        inflater.inflate(R.menu.context_menu, menu)
+//    }
+//
+//    override fun onContextItemSelected(item: MenuItem): Boolean {
+//        return super.onContextItemSelected(item)
+//    }
 }

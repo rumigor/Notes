@@ -12,10 +12,6 @@ class MainViewModel : ViewModel() {
     private val viewStateLiveData: MutableLiveData<MainViewState> = MutableLiveData()
 
     init{
-        val notesDao: NotesDao = App
-            .instance
-            .note
-        storySource = StorySource(storyDao)
         viewStateLiveData.value = MainViewState(Repository.notes)
     }
 
