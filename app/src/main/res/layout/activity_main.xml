@@ -1,26 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/addNote"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:src="@android:drawable/ic_input_add"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:focusable="true"
-        android:contentDescription="@string/add_note" />
-
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-
-    android:fitsSystemWindows="true"
-    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".ui.MainActivity">
 
 
@@ -47,6 +31,21 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:listitem="@layout/item_note"/>
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/fab_magin"
+        android:layout_marginBottom="@dimen/fab_magin"
+        android:backgroundTint="#FFECB3"
+        android:backgroundTintMode="add"
+        android:contentDescription="@string/create_new_note"
+        android:focusable="true"
+        app:backgroundTint="#FFF176"
+        app:fabSize="normal"
+        app:layout_anchor="@id/mainRecycler"
+        app:layout_anchorGravity="bottom|end"
+        app:layout_behavior=".ui.FABBehavior"
+        app:srcCompat="@drawable/newnote" />
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -25,54 +25,56 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(ui.toolbar)
 
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        adapter = MainAdapter()
+        adapter = MainAdapter(object: OnItemClickListener{
+            override fun onItemClick(note: Note) {
+                openNoteScreen(note)
+            }
+
+        })
         ui.mainRecycler.adapter = adapter
         registerForContextMenu(ui.mainRecycler)
         viewModel.viewState().observe(this, { state ->
             state?.let { adapter.notes = state.notes }
 
         })
-        ui.addNote.setOnClickListener {
-            Repository.notes.add(
-                Note(
-                    "Новая добавленная заметка",
-                    "Эта заметка добавлена с помощью кнопки",
-                    0xfff01292.toInt()
-                ),
-            )
-            adapter.notifyDataSetChanged()
-        }
-        registerForContextMenu(ui.mainRecycler)
+
+        ui.fab.setOnClickListener { openNoteScreen() }
+
+//        registerForContextMenu(ui.mainRecycler)
     }
 
-    override fun onContextItemSelected(item: MenuItem): Boolean {
-        when (item.itemId){
-            R.id.update_context -> Toast.makeText(
-                this,
-                "Функция будет реализована позже",
-                Toast.LENGTH_SHORT
-            ).show()
-            R.id.remove_context -> {
-                Repository.notes.removeAt(adapter.position)
-                adapter.notifyDataSetChanged()
-            }
-            R.id.clear_context -> {
-                Repository.notes.clear()
-                adapter.notifyDataSetChanged()
-            }
+//    override fun onContextItemSelected(item: MenuItem): Boolean {
+//        when (item.itemId){
+//            R.id.update_context -> Toast.makeText(
+//                this,
+//                "Функция будет реализована позже",
+//                Toast.LENGTH_SHORT
+//            ).show()
+//            R.id.remove_context -> {
+//                Repository.notes.removeAt(adapter.position)
+//                adapter.notifyDataSetChanged()
+//            }
+//            R.id.clear_context -> {
+//                Repository.notes.clear()
+//                adapter.notifyDataSetChanged()
+//            }
+//
+//        }
+//        return super.onContextItemSelected(item)
+//    }
+//
+//    override fun onCreateContextMenu(
+//        menu: ContextMenu?,
+//        v: View?,
+//        menuInfo: ContextMenu.ContextMenuInfo?
+//    ) {
+//        super.onCreateContextMenu(menu, v, menuInfo)
+//        val inflater: MenuInflater = menuInflater
+//        inflater.inflate(R.menu.context_menu, menu)
+//    }
 
-        }
-        return super.onContextItemSelected(item)
-    }
-
-    override fun onCreateContextMenu(
-        menu: ContextMenu?,
-        v: View?,
-        menuInfo: ContextMenu.ContextMenuInfo?
-    ) {
-        super.onCreateContextMenu(menu, v, menuInfo)
-        val inflater: MenuInflater = menuInflater
-        inflater.inflate(R.menu.context_menu, menu)
+    private fun openNoteScreen(note: Note? = null){
+        startActivity(NoteActivity.getStartIntent(this, note))
     }
 
 }
