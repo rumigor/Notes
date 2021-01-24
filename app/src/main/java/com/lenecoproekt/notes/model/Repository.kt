@@ -61,4 +61,17 @@ object Repository {
         }
         notes.add(note)
     }
+
+    fun removeNote(i : Int){
+        notes.removeAt(i)
+        notesLiveData.value = notes
+    }
+
+    fun deleteAllNotes(){
+        notes.clear()
+        notesLiveData.value = notes
+    }
+
+
+
 }

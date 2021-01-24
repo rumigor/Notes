@@ -40,38 +40,35 @@ class MainActivity : AppCompatActivity() {
 
         ui.fab.setOnClickListener { openNoteScreen() }
 
-//        registerForContextMenu(ui.mainRecycler)
+        registerForContextMenu(ui.mainRecycler)
     }
 
-//    override fun onContextItemSelected(item: MenuItem): Boolean {
-//        when (item.itemId){
-//            R.id.update_context -> Toast.makeText(
-//                this,
-//                "Функция будет реализована позже",
-//                Toast.LENGTH_SHORT
-//            ).show()
-//            R.id.remove_context -> {
-//                Repository.notes.removeAt(adapter.position)
-//                adapter.notifyDataSetChanged()
-//            }
-//            R.id.clear_context -> {
-//                Repository.notes.clear()
-//                adapter.notifyDataSetChanged()
-//            }
-//
-//        }
-//        return super.onContextItemSelected(item)
-//    }
-//
-//    override fun onCreateContextMenu(
-//        menu: ContextMenu?,
-//        v: View?,
-//        menuInfo: ContextMenu.ContextMenuInfo?
-//    ) {
-//        super.onCreateContextMenu(menu, v, menuInfo)
-//        val inflater: MenuInflater = menuInflater
-//        inflater.inflate(R.menu.context_menu, menu)
-//    }
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        when (item.itemId){
+            R.id.update_context -> openNoteScreen(adapter.notes[adapter.position])
+
+            R.id.remove_context -> {
+                Repository.removeNote(adapter.position)
+                adapter.notifyDataSetChanged()
+            }
+            R.id.clear_context -> {
+                Repository.deleteAllNotes()
+                adapter.notifyDataSetChanged()
+            }
+
+        }
+        return super.onContextItemSelected(item)
+    }
+
+    override fun onCreateContextMenu(
+        menu: ContextMenu?,
+        v: View?,
+        menuInfo: ContextMenu.ContextMenuInfo?
+    ) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.context_menu, menu)
+    }
 
     private fun openNoteScreen(note: Note? = null){
         startActivity(NoteActivity.getStartIntent(this, note))

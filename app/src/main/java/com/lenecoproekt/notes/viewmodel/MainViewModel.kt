@@ -4,8 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.lenecoproekt.notes.model.Repository
-import com.lenecoproekt.notes.model.roomDataBase.App
-import com.lenecoproekt.notes.model.roomDataBase.NotesDao
 import com.lenecoproekt.notes.ui.MainViewState
 
 class MainViewModel : ViewModel() {
