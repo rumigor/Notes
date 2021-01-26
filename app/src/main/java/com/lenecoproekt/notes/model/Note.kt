@@ -6,9 +6,9 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Note(
-    val id: String,
-    val title: String,
-    val note: String,
+    val id: String = "",
+    val title: String = "",
+    val note: String = "",
     var color: Color = Color.WHITE,
     val lastChanged: Date = Date()
 ) : Parcelable {

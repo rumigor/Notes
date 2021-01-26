@@ -5,26 +5,31 @@ import android.view.ContextMenu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.lenecoproekt.notes.R
 import com.lenecoproekt.notes.databinding.ActivityMainBinding
 import com.lenecoproekt.notes.model.Note
 import com.lenecoproekt.notes.model.Repository
+import com.lenecoproekt.notes.ui.base.BaseActivity
 import com.lenecoproekt.notes.viewmodel.MainViewModel
 
-class MainActivity : AppCompatActivity() {
-    lateinit var ui: ActivityMainBinding
-    lateinit var viewModel: MainViewModel
-    lateinit var adapter: MainAdapter
+class MainActivity : BaseActivity<List<Note>?, MainViewState>() {
+
+    override val viewModel: MainViewModel by lazy { ViewModelProvider(this).get(MainViewModel::class.java) }
+    override val ui: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+    private lateinit var adapter: MainAdapter
+
+    override fun renderData(data: List<Note>?) {
+        if (data == null) return
+        adapter.notes = data
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ui = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(ui.root)
+
         setSupportActionBar(ui.toolbar)
 
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         adapter = MainAdapter(object: OnItemClickListener{
             override fun onItemClick(note: Note) {
                 openNoteScreen(note)
@@ -33,10 +38,6 @@ class MainActivity : AppCompatActivity() {
         })
         ui.mainRecycler.adapter = adapter
         registerForContextMenu(ui.mainRecycler)
-        viewModel.viewState().observe(this, { state ->
-            state?.let { adapter.notes = state.notes }
-
-        })
 
         ui.fab.setOnClickListener { openNoteScreen() }
 
@@ -48,12 +49,11 @@ class MainActivity : AppCompatActivity() {
             R.id.update_context -> openNoteScreen(adapter.notes[adapter.position])
 
             R.id.remove_context -> {
-                Repository.removeNote(adapter.position)
+                Repository.removeNote(adapter.notes[adapter.position].id)
                 adapter.notifyDataSetChanged()
             }
             R.id.clear_context -> {
-                Repository.deleteAllNotes()
-                adapter.notifyDataSetChanged()
+
             }
 
         }
@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun openNoteScreen(note: Note? = null){
-        startActivity(NoteActivity.getStartIntent(this, note))
+        startActivity(NoteActivity.getStartIntent(this, note?.id))
     }
 
 }

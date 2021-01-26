@@ -9,6 +9,7 @@
     <string name="note_title">Title</string>
     <string name="new_note_tilte">New note</string>
     <string name="create_new_note">Create new note</string>
+    <string name="ok_bth_title">OK</string>
 
     <string-array name="spinner_array">
         <item>White</item>

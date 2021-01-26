@@ -2,10 +2,11 @@
 <resources>
     <string name="appTitle">Rumigor Notes</string>
     <string name="add_note">Add note</string>
-    <string name="update">update</string>
+    <string name="edit_note">update</string>
     <string name="remove">remove</string>
     <string name="delete_all">delete all</string>
     <string name="note_title">Title</string>
     <string name="new_note_tilte">New note</string>
     <string name="create_new_note">Create new note</string>
+    <string name="ok_bth_title">OK</string>
 </resources>
