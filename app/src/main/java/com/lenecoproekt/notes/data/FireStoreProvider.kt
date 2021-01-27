@@ -17,7 +17,6 @@ class FireStoreProvider : RemoteDataProvider {
     }
 
     private val db = FirebaseFirestore.getInstance()
-
     private val notesReferences = db.collection(NOTES_COLLECTION)
 
 
@@ -45,7 +44,7 @@ class FireStoreProvider : RemoteDataProvider {
             .addOnSuccessListener { snapshot ->
                 result.value = NoteResult.Success(snapshot.toObject(Note::class.java))
             }
-            .addOnFailureListener{exception ->
+            .addOnFailureListener { exception ->
                 result.value = NoteResult.Error(exception)
             }
         return result
@@ -75,9 +74,13 @@ class FireStoreProvider : RemoteDataProvider {
         return subscribeToAllNotes()
     }
 
-    override fun deleteAllNotes(): LiveData<NoteResult> {
-       return subscribeToAllNotes()
+    override fun deleteAllNotes(notes: List<Note>): LiveData<NoteResult> {
+        for (i in notes.indices) {
+            notesReferences.document(notes[i].id)
+                .delete()
+                .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully deleted!") }
+                .addOnFailureListener { e -> Log.w(TAG, "Error deleting document", e) }
+        }
+        return subscribeToAllNotes()
     }
-
-
 }

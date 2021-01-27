@@ -41,11 +41,11 @@ class NoteActivity : BaseActivity<Note?, NoteViewState>() {
     override val viewModel: NoteViewModel by lazy { ViewModelProvider(this).get(NoteViewModel::class.java) }
     private val textChangeListener = object : TextWatcher {
         override fun afterTextChanged(s: Editable?) {
-            triggerSaveNote()
+            // not used
         }
 
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            // not used
+            triggerSaveNote()
         }
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -66,7 +66,7 @@ class NoteActivity : BaseActivity<Note?, NoteViewState>() {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         if (noteId == null ) supportActionBar?.title = getString(R.string.new_note_tilte)
-
+        initView()
     }
 
     private fun initView() {
@@ -135,7 +135,8 @@ class NoteActivity : BaseActivity<Note?, NoteViewState>() {
     }
 
     private fun triggerSaveNote() {
-        if (ui.titleEdit.text == null || ui.titleEdit.text!!.length < 3) return
+        if (ui.titleEdit.text == null ||
+            (ui.titleEdit.text!!.length < 3 && ui.bodyTextEdit.text == null)) return
 
         Handler(Looper.getMainLooper()).postDelayed({
             note = note?.copy(

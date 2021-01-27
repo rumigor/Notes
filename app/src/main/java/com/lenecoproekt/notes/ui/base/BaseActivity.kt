@@ -33,7 +33,7 @@ abstract class BaseActivity<T, S : BaseViewState<T>> : AppCompatActivity() {
 
     protected fun showError(error: String) {
         val snackbar = Snackbar.make(ui.root, error, Snackbar.LENGTH_INDEFINITE)
-        snackbar.setAction(R.string.ok_bth_title, View.OnClickListener { snackbar.dismiss() })
+        snackbar.setAction(R.string.ok_bth_title) { snackbar.dismiss() }
         snackbar.show()
     }
 }

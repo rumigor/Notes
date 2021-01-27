@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.lenecoproekt.notes.R
 import com.lenecoproekt.notes.databinding.ActivityMainBinding
 import com.lenecoproekt.notes.model.Note
-import com.lenecoproekt.notes.model.Repository
 import com.lenecoproekt.notes.ui.base.BaseActivity
 import com.lenecoproekt.notes.viewmodel.MainViewModel
 
@@ -38,9 +37,7 @@ class MainActivity : BaseActivity<List<Note>?, MainViewState>() {
         })
         ui.mainRecycler.adapter = adapter
         registerForContextMenu(ui.mainRecycler)
-
         ui.fab.setOnClickListener { openNoteScreen() }
-
         registerForContextMenu(ui.mainRecycler)
     }
 
@@ -49,11 +46,12 @@ class MainActivity : BaseActivity<List<Note>?, MainViewState>() {
             R.id.update_context -> openNoteScreen(adapter.notes[adapter.position])
 
             R.id.remove_context -> {
-                Repository.removeNote(adapter.notes[adapter.position].id)
+                viewModel.removeNote(adapter.notes[adapter.position].id)
                 adapter.notifyDataSetChanged()
             }
             R.id.clear_context -> {
-
+                viewModel.deleteAllNotes(adapter.notes)
+                adapter.notifyDataSetChanged()
             }
 
         }

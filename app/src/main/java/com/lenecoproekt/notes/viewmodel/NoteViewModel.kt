@@ -1,5 +1,6 @@
 package com.lenecoproekt.notes.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.Observer
 import com.lenecoproekt.notes.model.Color
 import com.lenecoproekt.notes.model.Note
@@ -42,6 +43,7 @@ class NoteViewModel(val repository: Repository = Repository) :
     fun createNewNote(title: String, body: String, color: Color): Note {
         val note = Note(UUID.randomUUID().toString(), title, body)
         note.color = color
+        Log.d("NEW_NOTE", "Note created")
         return note
     }
 }

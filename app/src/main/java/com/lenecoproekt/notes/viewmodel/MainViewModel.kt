@@ -28,7 +28,6 @@ class MainViewModel(val repository: Repository = Repository) :
         }
     }
 
-
     init {
         viewStateLiveData.value = MainViewState()
         repositoryNotes.observeForever(notesObserver)
@@ -36,5 +35,13 @@ class MainViewModel(val repository: Repository = Repository) :
 
     override fun onCleared() {
         repositoryNotes.removeObserver(notesObserver)
+    }
+
+    fun removeNote(id : String){
+        repository.removeNote(id)
+    }
+
+    fun deleteAllNotes (notes : List<Note>) {
+        repository.deleteAllNotes(notes)
     }
 }
