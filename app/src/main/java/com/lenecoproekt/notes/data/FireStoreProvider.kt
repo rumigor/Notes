@@ -31,6 +31,9 @@ class FireStoreProvider : RemoteDataProvider {
                 for (doc: QueryDocumentSnapshot in value) {
                     notes.add(doc.toObject(Note::class.java))
                 }
+                notes.sortByDescending {
+                    it.lastChanged
+                }
                 result.value = NoteResult.Success(notes)
             }
         }
