@@ -119,6 +119,9 @@ class NoteActivity : BaseActivity<Note?, NoteViewState>() {
                 i: Int,
                 l: Long
             ) {
+                if (note != null) {
+                    note!!.color = enumValues<Color>()[ui.spinner.selectedItemId.toInt()]
+                }
                 triggerSaveNote()
             }
 
