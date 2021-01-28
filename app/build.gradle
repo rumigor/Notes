@@ -47,7 +47,9 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
     implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'com.google.firebase:firebase-core:18.0.1'
     implementation 'com.google.firebase:firebase-firestore:22.0.1'
+
     def multidex_version = "2.0.1"
     implementation "androidx.multidex:multidex:$multidex_version"
     def lifecycle_version = "2.2.0"

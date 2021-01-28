@@ -1,3 +1,4 @@
+
 package com.lenecoproekt.notes.data
 
 import androidx.lifecycle.LiveData

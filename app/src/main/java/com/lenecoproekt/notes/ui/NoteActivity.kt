@@ -119,8 +119,10 @@ class NoteActivity : BaseActivity<Note?, NoteViewState>() {
                 i: Int,
                 l: Long
             ) {
-                if (note != null) {
-                    note!!.color = enumValues<Color>()[ui.spinner.selectedItemId.toInt()]
+                note.let {
+                    if (it != null) {
+                        it.color = enumValues<Color>()[ui.spinner.selectedItemId.toInt()]
+                    }
                 }
                 triggerSaveNote()
             }
@@ -145,7 +147,6 @@ class NoteActivity : BaseActivity<Note?, NoteViewState>() {
                 title = ui.titleEdit.text.toString(),
                 note = ui.bodyTextEdit.text.toString(),
                 lastChanged = Date(),
-                color = enumValues<Color>()[ui.spinner.selectedItemId.toInt()]
             )
                 ?: viewModel.createNewNote(
                     ui.titleEdit.text.toString(),
