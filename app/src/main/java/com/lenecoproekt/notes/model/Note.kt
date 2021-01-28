@@ -28,12 +28,12 @@ data class Note(
     }
 }
 
-enum class Color (val position : Int) {
-    WHITE (0),
-    YELLOW (1),
-    GREEN (2),
-    BLUE (3),
-    RED(4),
-    VIOLET (5),
-    PINK(6)
+enum class Color {
+    WHITE,
+    YELLOW,
+    GREEN,
+    BLUE,
+    RED,
+    VIOLET,
+    PINK
 }

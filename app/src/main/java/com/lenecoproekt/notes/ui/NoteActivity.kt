@@ -135,42 +135,26 @@ class NoteActivity : BaseActivity<Note?, NoteViewState>() {
     }
 
     private fun triggerSaveNote() {
-        if (ui.titleEdit.text == null ||
-            (ui.titleEdit.text!!.length < 3 && ui.bodyTextEdit.text == null)) return
+        if (ui.titleEdit.text == null || ui.titleEdit.text!!.length < 3) return
 
         Handler(Looper.getMainLooper()).postDelayed({
             note = note?.copy(
                 title = ui.titleEdit.text.toString(),
                 note = ui.bodyTextEdit.text.toString(),
                 lastChanged = Date(),
-                color = setColor(ui.spinner.selectedItemId)
+                color = enumValues<Color>()[ui.spinner.selectedItemId.toInt()]
             )
                 ?: viewModel.createNewNote(
                     ui.titleEdit.text.toString(),
                     ui.bodyTextEdit.text.toString(),
-                    setColor(ui.spinner.selectedItemId)
+                    enumValues<Color>()[ui.spinner.selectedItemId.toInt()]
                 )
             if (note != null) viewModel.saveChanges(note!!)
         }, SAVE_DELAY)
-    }
-
-
-    private fun setColor(selectedItemId: Long): Color {
-        return when (selectedItemId) {
-            0L -> Color.WHITE
-            1L -> Color.YELLOW
-            2L -> Color.GREEN
-            3L -> Color.BLUE
-            4L -> Color.RED
-            5L -> Color.VIOLET
-            6L -> Color.PINK
-            else -> Color.WHITE
-        }
     }
 
     override fun renderData(data: Note?) {
         this.note = data
         initView()
     }
-
 }
