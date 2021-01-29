@@ -27,18 +27,16 @@ class NoteViewModel(val repository: Repository = Repository) :
     }
 
     fun loadNote(noteId: String) {
-        repository.getNoteById(noteId).observeForever(object : Observer<NoteResult> {
-            override fun onChanged(t: NoteResult?) {
-                t?.let {
-                    when (it) {
-                        is NoteResult.Success<*> ->
-                            viewStateLiveData.value = NoteViewState(note = it.data as? Note)
-                        is NoteResult.Error ->
-                            viewStateLiveData.value = NoteViewState(error = it.error)
-                    }
-                } ?: return
+        repository.getNoteById(noteId).observeForever { t ->
+            t?.apply {
+                when (this) {
+                    is NoteResult.Success<*> ->
+                        viewStateLiveData.value = NoteViewState(note = data as? Note)
+                    is NoteResult.Error ->
+                        viewStateLiveData.value = NoteViewState(error = error)
+                }
             }
-        })
+        }
     }
 
     fun createNewNote(title: String, body: String, color: Color): Note {
@@ -48,3 +46,4 @@ class NoteViewModel(val repository: Repository = Repository) :
         return note
     }
 }
+

@@ -65,7 +65,7 @@ class NoteActivity : BaseActivity<Note?, NoteViewState>() {
         setSupportActionBar(ui.toolbar)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        if (noteId == null) supportActionBar?.title = getString(R.string.new_note_tilte)
+        noteId?.let { supportActionBar?.title = getString(R.string.new_note_tilte) }
         initView()
     }
 
