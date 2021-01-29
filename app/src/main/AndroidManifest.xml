@@ -11,8 +11,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Notes"
         android:name="androidx.multidex.MultiDexApplication">
-        <activity android:name=".ui.NoteActivity" />
-        <activity android:name=".ui.MainActivity">
+        <activity android:name=".ui.activity.NoteActivity" />
+        <activity android:name=".ui.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -6,7 +6,7 @@ import com.lenecoproekt.notes.model.Color
 import com.lenecoproekt.notes.model.Note
 import com.lenecoproekt.notes.model.NoteResult
 import com.lenecoproekt.notes.model.Repository
-import com.lenecoproekt.notes.ui.NoteViewState
+import com.lenecoproekt.notes.ui.activity.NoteViewState
 import com.lenecoproekt.notes.ui.base.BaseViewModel
 import java.util.*
 
@@ -21,21 +21,22 @@ class NoteViewModel(val repository: Repository = Repository) :
     }
 
     override fun onCleared() {
-        if (pendingNote != null) {
-            repository.saveNote(pendingNote!!)
+        pendingNote?.let {
+            repository.saveNote(it)
         }
     }
+
     fun loadNote(noteId: String) {
         repository.getNoteById(noteId).observeForever(object : Observer<NoteResult> {
             override fun onChanged(t: NoteResult?) {
-                if (t == null) return
-
-                when (t) {
-                    is NoteResult.Success<*> ->
-                        viewStateLiveData.value = NoteViewState(note = t.data as? Note)
-                    is NoteResult.Error ->
-                        viewStateLiveData.value = NoteViewState(error = t.error)
-                }
+                t?.let {
+                    when (it) {
+                        is NoteResult.Success<*> ->
+                            viewStateLiveData.value = NoteViewState(note = it.data as? Note)
+                        is NoteResult.Error ->
+                            viewStateLiveData.value = NoteViewState(error = it.error)
+                    }
+                } ?: return
             }
         })
     }

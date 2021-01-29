@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".ui.MainActivity">
+    tools:context=".ui.activity.MainActivity">
 
 
     <com.google.android.material.appbar.AppBarLayout
@@ -45,7 +45,7 @@
         app:fabSize="normal"
         app:layout_anchor="@id/mainRecycler"
         app:layout_anchorGravity="bottom|end"
-        app:layout_behavior=".ui.FABBehavior"
+        app:layout_behavior=".ui.activity.FABBehavior"
         app:srcCompat="@drawable/newnote" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

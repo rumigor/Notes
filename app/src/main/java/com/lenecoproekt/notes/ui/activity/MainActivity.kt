@@ -1,4 +1,4 @@
-package com.lenecoproekt.notes.ui
+package com.lenecoproekt.notes.ui.activity
 
 import android.os.Bundle
 import android.view.ContextMenu
@@ -20,9 +20,9 @@ class MainActivity : BaseActivity<List<Note>?, MainViewState>() {
     private lateinit var adapter: MainAdapter
 
     override fun renderData(data: List<Note>?) {
-        if (data == null) return
-        adapter.notes = data
-
+        data?.let {
+            adapter.notes = data
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,7 +30,7 @@ class MainActivity : BaseActivity<List<Note>?, MainViewState>() {
 
         setSupportActionBar(ui.toolbar)
 
-        adapter = MainAdapter(object: OnItemClickListener{
+        adapter = MainAdapter(object : OnItemClickListener {
             override fun onItemClick(note: Note) {
                 openNoteScreen(note)
             }
@@ -38,24 +38,22 @@ class MainActivity : BaseActivity<List<Note>?, MainViewState>() {
         })
         ui.mainRecycler.adapter = adapter
         registerForContextMenu(ui.mainRecycler)
-
         ui.fab.setOnClickListener { openNoteScreen() }
-
         registerForContextMenu(ui.mainRecycler)
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
-        when (item.itemId){
+        when (item.itemId) {
             R.id.update_context -> openNoteScreen(adapter.notes[adapter.position])
 
             R.id.remove_context -> {
-                Repository.removeNote(adapter.notes[adapter.position].id)
+                viewModel.removeNote(adapter.notes[adapter.position].id)
                 adapter.notifyDataSetChanged()
             }
             R.id.clear_context -> {
-
+                viewModel.deleteAllNotes(adapter.notes)
+                adapter.notifyDataSetChanged()
             }
-
         }
         return super.onContextItemSelected(item)
     }
@@ -70,8 +68,7 @@ class MainActivity : BaseActivity<List<Note>?, MainViewState>() {
         inflater.inflate(R.menu.context_menu, menu)
     }
 
-    private fun openNoteScreen(note: Note? = null){
+    private fun openNoteScreen(note: Note? = null) {
         startActivity(NoteActivity.getStartIntent(this, note?.id))
     }
-
 }

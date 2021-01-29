@@ -16,24 +16,24 @@ abstract class BaseActivity<T, S : BaseViewState<T>> : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(ui.root)
-        viewModel.getViewState().observe(this, object : Observer<S> {
-            override fun onChanged(t: S?) {
-                if (t == null) return
-                if (t.data != null) renderData(t.data!!)
-                if (t.error != null) renderError(t.error)
+        viewModel.getViewState().observe(this, { t ->
+            t?.apply {
+                data?.let { renderData(it) }
+                error?.let { renderError(it) }
             }
         })
     }
 
-    protected fun renderError(error: Throwable) {
-        if (error.message != null) showError(error.message!!)
+    protected open fun renderError(error: Throwable) {
+        error.message?.let { showError(it) }
     }
 
     abstract fun renderData(data: T)
 
     protected fun showError(error: String) {
-        val snackbar = Snackbar.make(ui.root, error, Snackbar.LENGTH_INDEFINITE)
-        snackbar.setAction(R.string.ok_bth_title) { snackbar.dismiss() }
-        snackbar.show()
+        Snackbar.make(ui.root, error, Snackbar.LENGTH_INDEFINITE).apply {
+            setAction(R.string.ok_bth_title) { dismiss() }
+            show()
+        }
     }
 }

@@ -11,5 +11,4 @@ interface RemoteDataProvider {
     fun saveNote(note: Note) : LiveData<NoteResult>
     fun removeNote(id :String) : LiveData<NoteResult>
     fun deleteAllNotes(notes: List<Note>) : LiveData<NoteResult>
-
 }

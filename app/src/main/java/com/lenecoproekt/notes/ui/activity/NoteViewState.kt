@@ -1,4 +1,4 @@
-package com.lenecoproekt.notes.ui
+package com.lenecoproekt.notes.ui.activity
 
 import com.lenecoproekt.notes.model.Note
 import com.lenecoproekt.notes.ui.base.BaseViewState

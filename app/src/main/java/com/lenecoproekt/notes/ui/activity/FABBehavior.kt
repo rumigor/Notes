@@ -1,4 +1,4 @@
-package com.lenecoproekt.notes.ui
+package com.lenecoproekt.notes.ui.activity
 
 import android.annotation.SuppressLint
 import android.content.Context

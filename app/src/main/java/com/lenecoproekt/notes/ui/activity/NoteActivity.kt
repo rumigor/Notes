@@ -1,4 +1,4 @@
-package com.lenecoproekt.notes.ui
+package com.lenecoproekt.notes.ui.activity
 
 import android.content.Context
 import android.content.Intent
@@ -11,15 +11,15 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.lenecoproekt.notes.R
 import com.lenecoproekt.notes.databinding.ActivityNoteBinding
 import com.lenecoproekt.notes.model.Color
 import com.lenecoproekt.notes.model.Note
 import com.lenecoproekt.notes.ui.base.BaseActivity
+import com.lenecoproekt.notes.ui.format
+import com.lenecoproekt.notes.ui.getColorInt
 import com.lenecoproekt.notes.viewmodel.NoteViewModel
-import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -65,53 +65,22 @@ class NoteActivity : BaseActivity<Note?, NoteViewState>() {
         setSupportActionBar(ui.toolbar)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        if (noteId == null ) supportActionBar?.title = getString(R.string.new_note_tilte)
+        if (noteId == null) supportActionBar?.title = getString(R.string.new_note_tilte)
         initView()
     }
 
     private fun initView() {
-        ui.titleEdit.setText(note?.title ?: "")
-        ui.bodyTextEdit.setText(note?.note ?: "")
-        if (note != null) {
-            val color = when (note?.color) {
-                Color.WHITE -> {
-                    ui.spinner.setSelection(0)
-                    R.color.color_white
 
-                }
-                Color.VIOLET -> {
-                    ui.spinner.setSelection(5)
-                    R.color.color_violet
-                }
-                Color.YELLOW -> {
-                    ui.spinner.setSelection(1)
-                    R.color.color_yellow
-                }
-                Color.RED -> {
-                    ui.spinner.setSelection(4)
-                    R.color.color_red
-                }
-                Color.PINK -> {
-                    ui.spinner.setSelection(6)
-                    R.color.color_pink
-                }
-                Color.GREEN -> {
-                    ui.spinner.setSelection(2)
-                    R.color.color_green
-                }
-                Color.BLUE -> {
-                    ui.spinner.setSelection(3)
-                    R.color.color_blue
-                }
-                else -> {
-                    ui.spinner.setSelection(0)
-                    R.color.color_white
-                }
-            }
-            ui.toolbar.setBackgroundColor(resources.getColor(color, theme))
+        note?.run {
+            supportActionBar?.title = lastChanged.format()
+            ui.titleEdit.setText(title)
+            ui.bodyTextEdit.setText(note)
+            ui.toolbar.setBackgroundColor(color.getColorInt(this@NoteActivity))
         }
+
         ui.titleEdit.addTextChangedListener(textChangeListener)
         ui.bodyTextEdit.addTextChangedListener(textChangeListener)
+
         ui.spinner.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(
                 adapterView: AdapterView<*>?,
@@ -119,10 +88,8 @@ class NoteActivity : BaseActivity<Note?, NoteViewState>() {
                 i: Int,
                 l: Long
             ) {
-                note.let {
-                    if (it != null) {
-                        it.color = enumValues<Color>()[ui.spinner.selectedItemId.toInt()]
-                    }
+                note?.apply {
+                    color = enumValues<Color>()[ui.spinner.selectedItemId.toInt()]
                 }
                 triggerSaveNote()
             }

@@ -5,7 +5,7 @@ import androidx.lifecycle.Observer
 import com.lenecoproekt.notes.model.Note
 import com.lenecoproekt.notes.model.NoteResult
 import com.lenecoproekt.notes.model.Repository
-import com.lenecoproekt.notes.ui.MainViewState
+import com.lenecoproekt.notes.ui.activity.MainViewState
 import com.lenecoproekt.notes.ui.base.BaseViewModel
 
 class MainViewModel(val repository: Repository = Repository) :
@@ -15,16 +15,17 @@ class MainViewModel(val repository: Repository = Repository) :
     private val notesObserver = object : Observer<NoteResult> {
 
         override fun onChanged(t: NoteResult?) {
-            if (t == null) return
 
-            when (t) {
-                is NoteResult.Success<*> -> {
-                    viewStateLiveData.value = MainViewState(notes = t.data as? List<Note>)
+            t?.let {
+                when (it) {
+                    is NoteResult.Success<*> -> {
+                        viewStateLiveData.value = MainViewState(notes = it.data as? List<Note>)
+                    }
+                    is NoteResult.Error -> {
+                        viewStateLiveData.value = MainViewState(error = it.error)
+                    }
                 }
-                is NoteResult.Error -> {
-                    viewStateLiveData.value = MainViewState(error = t.error)
-                }
-            }
+            } ?: return
         }
     }
 
@@ -37,11 +38,11 @@ class MainViewModel(val repository: Repository = Repository) :
         repositoryNotes.removeObserver(notesObserver)
     }
 
-    fun removeNote(id : String){
+    fun removeNote(id: String) {
         repository.removeNote(id)
     }
 
-    fun deleteAllNotes (notes : List<Note>) {
+    fun deleteAllNotes(notes: List<Note>) {
         repository.deleteAllNotes(notes)
     }
 }
