@@ -1,3 +1,23 @@
 <resources>
     <string name="app_name">Notes</string>
+    <string name="appTitle">Rumigor Notes</string>
+    <string name="add_note">Add note</string>
+    <string name="edit_note">Edit Note</string>
+    <string name="remove">Remove note</string>
+    <string name="delete_all">Delete all notes</string>
+    <string name="note_text">Note text</string>
+    <string name="note_title">Title</string>
+    <string name="new_note_tilte">New note</string>
+    <string name="create_new_note">Create new note</string>
+    <string name="ok_bth_title">OK</string>
+
+    <string-array name="spinner_array">
+        <item>White</item>
+        <item>Yellow</item>
+        <item>Green</item>
+        <item>Blue</item>
+        <item>Red</item>
+        <item>Violet</item>
+        <item>Pink</item>
+    </string-array>
 </resources>

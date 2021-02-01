@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="margin">8dp</dimen>
+    <dimen name="cardViewMargin">4dp</dimen>
+    <dimen name="note_body_margin_top">16dp</dimen>
+    <dimen name="note_linear_layout_padding">16dp</dimen>
+    <dimen name="fab_magin">8dp</dimen>
+</resources>
