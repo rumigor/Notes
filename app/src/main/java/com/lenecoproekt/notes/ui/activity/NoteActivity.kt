@@ -22,6 +22,7 @@ import com.lenecoproekt.notes.ui.base.BaseActivity
 import com.lenecoproekt.notes.ui.format
 import com.lenecoproekt.notes.ui.getColorInt
 import com.lenecoproekt.notes.viewmodel.NoteViewModel
+import org.koin.android.ext.android.inject
 import java.util.*
 
 
@@ -41,7 +42,7 @@ class NoteActivity : BaseActivity<NoteViewState.Data, NoteViewState>() {
     private var note: Note? = null
     private var color: Color = Color.YELLOW
     override val ui: ActivityNoteBinding by lazy { ActivityNoteBinding.inflate(layoutInflater) }
-    override val viewModel: NoteViewModel by lazy { ViewModelProvider(this).get(NoteViewModel::class.java) }
+    override val viewModel: NoteViewModel by inject()
     private val textChangeListener = object : TextWatcher {
         override fun afterTextChanged(s: Editable?) {
             // not used
@@ -67,24 +68,33 @@ class NoteActivity : BaseActivity<NoteViewState.Data, NoteViewState>() {
         } ?: run {
             supportActionBar?.title = "New note"
         }
-
+        ui.colorPicker.onColorClickListener = {
+            color = it
+            setToolbarColor(it)
+            triggerSaveNote()
+        }
         setEditListener()
     }
 
     private fun initView() {
 
         note?.run {
-            supportActionBar?.title = lastChanged.format()
-            ui.toolbar.setBackgroundColor(color.getColorInt(this@NoteActivity))
-
             removeEditListener()
-            ui.titleEdit.setText(title)
-            ui.bodyTextEdit.setText(note)
+            if (title != ui.titleEdit.text.toString()) {
+                ui.titleEdit.setText(title)
+            }
+            if (note != ui.bodyTextEdit.text.toString()) {
+                ui.bodyTextEdit.setText(note)
+            }
             setEditListener()
-        }
 
-        ui.titleEdit.addTextChangedListener(textChangeListener)
-        ui.bodyTextEdit.addTextChangedListener(textChangeListener)
+            supportActionBar?.title = lastChanged.format()
+            setToolbarColor(color)
+        }
+    }
+
+    private fun setToolbarColor(color: Color) {
+        ui.toolbar.setBackgroundColor(color.getColorInt(this@NoteActivity))
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean =
@@ -93,9 +103,17 @@ class NoteActivity : BaseActivity<NoteViewState.Data, NoteViewState>() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         android.R.id.home -> super.onBackPressed().let { true }
-//        R.id.palette -> tooglePalette().let { true }
+        R.id.palette -> togglePalette().let { true }
         R.id.delete -> removeNote().let { true }
         else -> super.onOptionsItemSelected(item)
+    }
+
+    private fun togglePalette() {
+        if (ui.colorPicker.isOpen) {
+            ui.colorPicker.close()
+        } else {
+           ui.colorPicker.open()
+        }
     }
 
     private fun removeNote() {
@@ -114,18 +132,23 @@ class NoteActivity : BaseActivity<NoteViewState.Data, NoteViewState>() {
                 title = ui.titleEdit.text.toString(),
                 note = ui.bodyTextEdit.text.toString(),
                 lastChanged = Date(),
-            )
-                ?: viewModel.createNewNote(
-                    ui.titleEdit.text.toString(),
-                    ui.bodyTextEdit.text.toString(),
-                    color = color
-                )
+                color = color
+            ) ?: createNewNote()
             if (note != null) viewModel.saveChanges(note!!)
         }, SAVE_DELAY)
     }
 
+    private fun createNewNote(): Note = Note(
+        UUID.randomUUID().toString(),
+        ui.titleEdit.text.toString(),
+        ui.bodyTextEdit.text.toString(),
+        color = color
+    )
+
     override fun renderData(data: NoteViewState.Data) {
         if (data.isRemoved) finish()
+
+        this.note = data.note
         data.note?.let { color = it.color }
         initView()
     }
@@ -138,5 +161,13 @@ class NoteActivity : BaseActivity<NoteViewState.Data, NoteViewState>() {
     private fun removeEditListener() {
         ui.titleEdit.removeTextChangedListener(textChangeListener)
         ui.bodyTextEdit.removeTextChangedListener(textChangeListener)
+    }
+
+    override fun onBackPressed() {
+        if (ui.colorPicker.isOpen){
+            ui.colorPicker.close()
+            return
+        }
+        super.onBackPressed()
     }
 }

@@ -6,13 +6,14 @@ import androidx.lifecycle.ViewModelProvider
 import com.lenecoproekt.notes.databinding.ActivitySplashBinding
 import com.lenecoproekt.notes.ui.base.BaseActivity
 import com.lenecoproekt.notes.viewmodel.SplashViewModel
+import org.koin.android.ext.android.inject
 
 
 private const val START_DELAY = 1000L
 
 class SplashActivity : BaseActivity<Boolean?, SplashViewState>() {
 
-    override val viewModel: SplashViewModel by lazy { ViewModelProvider(this).get(SplashViewModel::class.java) }
+    override val viewModel: SplashViewModel by inject()
     override val ui: ActivitySplashBinding by lazy {ActivitySplashBinding.inflate(layoutInflater)}
 
 

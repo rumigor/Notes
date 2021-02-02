@@ -7,9 +7,7 @@ import com.lenecoproekt.notes.data.RemoteDataProvider
 import java.util.*
 
 
-object Repository {
-
-    private val remoteDataProvider: RemoteDataProvider = FireStoreProvider()
+class Repository (private val remoteDataProvider: RemoteDataProvider) {
 
     fun getNotes() = remoteDataProvider.subscribeToAllNotes()
     fun saveNote(note: Note) = remoteDataProvider.saveNote(note)

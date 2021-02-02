@@ -14,13 +14,14 @@ import java.lang.Exception
 private const val NOTES_COLLECTION = "notes"
 private const val USERS_COLLECTION = "users"
 
-class FireStoreProvider : RemoteDataProvider {
+class FireStoreProvider(
+    private val firebaseAuth: FirebaseAuth,
+    private val db: FirebaseFirestore
+) : RemoteDataProvider {
 
     companion object {
         private val TAG = "${FireStoreProvider::class.java.simpleName} :"
     }
-
-    private val db = FirebaseFirestore.getInstance()
 
     override fun subscribeToAllNotes(): LiveData<NoteResult> {
         return MutableLiveData<NoteResult>().apply {
