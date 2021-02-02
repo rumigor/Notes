@@ -12,12 +12,15 @@ import java.util.*
 
 
 class NoteViewModel(val repository: Repository = Repository) :
-    BaseViewModel<Note?, NoteViewState>() {
+    BaseViewModel<NoteViewState.Data, NoteViewState>() {
+
+    private val currentNote: Note?
+        get() = viewStateLiveData.value?.data?.note
 
     private var pendingNote: Note? = null
 
     fun saveChanges(note: Note) {
-        pendingNote = note
+        viewStateLiveData.value = NoteViewState(NoteViewState.Data(note = note))
     }
 
     override fun onCleared() {
@@ -28,12 +31,12 @@ class NoteViewModel(val repository: Repository = Repository) :
 
     fun loadNote(noteId: String) {
         repository.getNoteById(noteId).observeForever { t ->
-            t?.apply {
-                when (this) {
+            t?.let { noteResult ->
+                viewStateLiveData.value = when (noteResult) {
                     is NoteResult.Success<*> ->
-                        viewStateLiveData.value = NoteViewState(note = data as? Note)
+                        NoteViewState(NoteViewState.Data(note = noteResult.data as? Note))
                     is NoteResult.Error ->
-                        viewStateLiveData.value = NoteViewState(error = error)
+                        NoteViewState(error = noteResult.error)
                 }
             }
         }
@@ -44,6 +47,21 @@ class NoteViewModel(val repository: Repository = Repository) :
         note.color = color
         Log.d("NEW_NOTE", "Note created")
         return note
+    }
+
+    fun removeNote() {
+        currentNote?.let {
+            repository.removeNote(it.id).observeForever { result ->
+                result?.let { noteResult ->
+                    viewStateLiveData.value = when (noteResult) {
+                        is NoteResult.Success<*> ->
+                            NoteViewState(NoteViewState.Data(isRemoved = true))
+                        is NoteResult.Error ->
+                            NoteViewState(error = noteResult.error)
+                    }
+                }
+            }
+        }
     }
 }
 

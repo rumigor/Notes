@@ -7,10 +7,12 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import com.lenecoproekt.notes.R
 import com.lenecoproekt.notes.databinding.ActivityNoteBinding
@@ -25,7 +27,7 @@ import java.util.*
 
 private const val SAVE_DELAY = 2000L
 
-class NoteActivity : BaseActivity<Note?, NoteViewState>() {
+class NoteActivity : BaseActivity<NoteViewState.Data, NoteViewState>() {
 
     companion object {
         const val EXTRA_NOTE = "NoteActivity.extra.NOTE"
@@ -37,6 +39,7 @@ class NoteActivity : BaseActivity<Note?, NoteViewState>() {
     }
 
     private var note: Note? = null
+    private var color: Color = Color.YELLOW
     override val ui: ActivityNoteBinding by lazy { ActivityNoteBinding.inflate(layoutInflater) }
     override val viewModel: NoteViewModel by lazy { ViewModelProvider(this).get(NoteViewModel::class.java) }
     private val textChangeListener = object : TextWatcher {
@@ -55,55 +58,52 @@ class NoteActivity : BaseActivity<Note?, NoteViewState>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        setSupportActionBar(ui.toolbar)
         val noteId = intent.getStringExtra(EXTRA_NOTE)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         noteId?.let {
             viewModel.loadNote(it)
+        } ?: run {
+            supportActionBar?.title = "New note"
         }
 
-
-        setSupportActionBar(ui.toolbar)
-
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        noteId?.let { supportActionBar?.title = getString(R.string.new_note_tilte) }
-        initView()
+        setEditListener()
     }
 
     private fun initView() {
 
         note?.run {
             supportActionBar?.title = lastChanged.format()
+            ui.toolbar.setBackgroundColor(color.getColorInt(this@NoteActivity))
+
+            removeEditListener()
             ui.titleEdit.setText(title)
             ui.bodyTextEdit.setText(note)
-            ui.toolbar.setBackgroundColor(color.getColorInt(this@NoteActivity))
+            setEditListener()
         }
 
         ui.titleEdit.addTextChangedListener(textChangeListener)
         ui.bodyTextEdit.addTextChangedListener(textChangeListener)
-
-        ui.spinner.onItemSelectedListener = object : OnItemSelectedListener {
-            override fun onItemSelected(
-                adapterView: AdapterView<*>?,
-                view: View?,
-                i: Int,
-                l: Long
-            ) {
-                note?.apply {
-                    color = enumValues<Color>()[ui.spinner.selectedItemId.toInt()]
-                }
-                triggerSaveNote()
-            }
-
-            override fun onNothingSelected(adapterView: AdapterView<*>?) {}
-        }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean =
+        menuInflater.inflate(R.menu.menu_note, menu).let { true }
+
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        android.R.id.home -> {
-            onBackPressed()
-            true
-        }
+        android.R.id.home -> super.onBackPressed().let { true }
+//        R.id.palette -> tooglePalette().let { true }
+        R.id.delete -> removeNote().let { true }
         else -> super.onOptionsItemSelected(item)
+    }
+
+    private fun removeNote() {
+        AlertDialog.Builder(this)
+            .setMessage(R.string.delete_dialog_message)
+            .setNegativeButton(R.string.logout_dialog_cancel) { dialog, _ -> dialog.dismiss() }
+            .setPositiveButton(R.string.ok_bth_title) { _, _ -> viewModel.removeNote() }
+            .show()
     }
 
     private fun triggerSaveNote() {
@@ -118,14 +118,25 @@ class NoteActivity : BaseActivity<Note?, NoteViewState>() {
                 ?: viewModel.createNewNote(
                     ui.titleEdit.text.toString(),
                     ui.bodyTextEdit.text.toString(),
-                    enumValues<Color>()[ui.spinner.selectedItemId.toInt()]
+                    color = color
                 )
             if (note != null) viewModel.saveChanges(note!!)
         }, SAVE_DELAY)
     }
 
-    override fun renderData(data: Note?) {
-        this.note = data
+    override fun renderData(data: NoteViewState.Data) {
+        if (data.isRemoved) finish()
+        data.note?.let { color = it.color }
         initView()
+    }
+
+    private fun setEditListener() {
+        ui.titleEdit.addTextChangedListener(textChangeListener)
+        ui.bodyTextEdit.addTextChangedListener(textChangeListener)
+    }
+
+    private fun removeEditListener() {
+        ui.titleEdit.removeTextChangedListener(textChangeListener)
+        ui.bodyTextEdit.removeTextChangedListener(textChangeListener)
     }
 }
