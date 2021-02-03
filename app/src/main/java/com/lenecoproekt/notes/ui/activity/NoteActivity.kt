@@ -21,6 +21,7 @@ import com.lenecoproekt.notes.model.Note
 import com.lenecoproekt.notes.ui.base.BaseActivity
 import com.lenecoproekt.notes.ui.format
 import com.lenecoproekt.notes.ui.getColorInt
+import com.lenecoproekt.notes.ui.getColorRes
 import com.lenecoproekt.notes.viewmodel.MainViewModel
 import com.lenecoproekt.notes.viewmodel.NoteViewModel
 import org.koin.android.ext.android.inject
@@ -97,6 +98,20 @@ class NoteActivity : BaseActivity<NoteViewState.Data, NoteViewState>() {
 
     private fun setToolbarColor(color: Color) {
         ui.toolbar.setBackgroundColor(color.getColorInt(this@NoteActivity))
+        when (color) {
+            Color.WHITE, Color.YELLOW -> ui.toolbar.setTitleTextColor(
+                resources.getColor(
+                    R.color.black,
+                    theme
+                )
+            )
+            else -> ui.toolbar.setTitleTextColor(
+                resources.getColor(
+                    R.color.white,
+                    theme
+                )
+            )
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean =
