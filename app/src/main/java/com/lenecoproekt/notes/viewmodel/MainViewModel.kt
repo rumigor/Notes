@@ -1,14 +1,19 @@
 package com.lenecoproekt.notes.viewmodel
 
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import com.lenecoproekt.notes.data.NoAuthException
 import com.lenecoproekt.notes.model.Note
 import com.lenecoproekt.notes.model.NoteResult
 import com.lenecoproekt.notes.model.Repository
+import com.lenecoproekt.notes.model.User
 import com.lenecoproekt.notes.ui.activity.MainViewState
+import com.lenecoproekt.notes.ui.activity.SplashViewState
 import com.lenecoproekt.notes.ui.base.BaseViewModel
 
-class MainViewModel(val repository: Repository = Repository) :
+class MainViewModel(val repository: Repository) :
     BaseViewModel<List<Note>?, MainViewState>() {
 
     private val repositoryNotes = repository.getNotes()
@@ -44,5 +49,9 @@ class MainViewModel(val repository: Repository = Repository) :
 
     fun deleteAllNotes(notes: List<Note>) {
         repository.deleteAllNotes(notes)
+    }
+
+    fun requestUser() : LiveData<User?> {
+        return repository.getCurrentUser()
     }
 }

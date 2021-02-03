@@ -6,6 +6,7 @@ import com.lenecoproekt.notes.R
 import com.lenecoproekt.notes.databinding.ItemNoteBinding
 import com.lenecoproekt.notes.model.Color
 import com.lenecoproekt.notes.model.Note
+import com.lenecoproekt.notes.ui.getColorInt
 
 interface OnItemClickListener {
     fun onItemClick(note: Note)
@@ -51,17 +52,8 @@ class MainAdapter(private val onItemClickListener: OnItemClickListener) :
             with(note) {
                 ui.title.text = this.title
                 ui.body.text = this.note
-                val color = when (note.color) {
-                    Color.WHITE -> R.color.color_white
-                    Color.VIOLET -> R.color.color_violet
-                    Color.YELLOW -> R.color.color_yellow
-                    Color.RED -> R.color.color_red
-                    Color.PINK -> R.color.color_pink
-                    Color.GREEN -> R.color.color_green
-                    Color.BLUE -> R.color.color_blue
-                }
-                itemView.setBackgroundResource(color)
-                itemView.setOnClickListener { onItemClickListener.onItemClick(note) }
+                ui.container.setCardBackgroundColor(this.color.getColorInt(itemView.context))
+                itemView.setOnClickListener { onItemClickListener.onItemClick(this) }
             }
         }
 
