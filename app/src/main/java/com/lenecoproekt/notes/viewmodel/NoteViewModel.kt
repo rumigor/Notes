@@ -7,7 +7,7 @@ import com.lenecoproekt.notes.ui.activity.NoteViewState
 import com.lenecoproekt.notes.ui.base.BaseViewModel
 
 
-class NoteViewModel(val repository: Repository = Repository) :
+class NoteViewModel(val repository: Repository) :
     BaseViewModel<NoteViewState.Data, NoteViewState>() {
 
     private val currentNote: Note?

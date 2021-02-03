@@ -8,6 +8,7 @@ import com.lenecoproekt.notes.model.Repository
 import com.lenecoproekt.notes.viewmodel.MainViewModel
 import com.lenecoproekt.notes.viewmodel.NoteViewModel
 import com.lenecoproekt.notes.viewmodel.SplashViewModel
+import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
@@ -19,13 +20,11 @@ val appModule = module {
 }
 
 val splashModule = module {
-    factory { SplashViewModel(get()) }
+    viewModel { SplashViewModel(get()) }
 }
 
 val mainModule = module {
-    factory { MainViewModel(get()) }
-}
+    viewModel { MainViewModel(get()) } }
 
 val noteModule = module {
-    factory { NoteViewModel(get()) }
-}
+    viewModel { NoteViewModel(get()) } }

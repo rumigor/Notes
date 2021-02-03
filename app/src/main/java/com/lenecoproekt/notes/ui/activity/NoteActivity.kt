@@ -24,6 +24,7 @@ import com.lenecoproekt.notes.ui.getColorInt
 import com.lenecoproekt.notes.viewmodel.MainViewModel
 import com.lenecoproekt.notes.viewmodel.NoteViewModel
 import org.koin.android.ext.android.inject
+import org.koin.android.viewmodel.ext.android.viewModel
 import java.util.*
 
 
@@ -43,7 +44,7 @@ class NoteActivity : BaseActivity<NoteViewState.Data, NoteViewState>() {
     private var note: Note? = null
     private var color: Color = Color.YELLOW
     override val ui: ActivityNoteBinding by lazy { ActivityNoteBinding.inflate(layoutInflater) }
-    override val viewModel: NoteViewModel by lazy {ViewModelProvider(this).get(NoteViewModel::class.java)}
+    override val viewModel: NoteViewModel by viewModel()
     private val textChangeListener = object : TextWatcher {
         override fun afterTextChanged(s: Editable?) {
 
@@ -113,7 +114,7 @@ class NoteActivity : BaseActivity<NoteViewState.Data, NoteViewState>() {
         if (ui.colorPicker.isOpen) {
             ui.colorPicker.close()
         } else {
-           ui.colorPicker.open()
+            ui.colorPicker.open()
         }
     }
 
@@ -165,7 +166,7 @@ class NoteActivity : BaseActivity<NoteViewState.Data, NoteViewState>() {
     }
 
     override fun onBackPressed() {
-        if (ui.colorPicker.isOpen){
+        if (ui.colorPicker.isOpen) {
             ui.colorPicker.close()
             return
         }

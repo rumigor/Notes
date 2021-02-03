@@ -14,10 +14,12 @@ import java.lang.Exception
 private const val NOTES_COLLECTION = "notes"
 private const val USERS_COLLECTION = "users"
 
-class FireStoreProvider (private val firebaseAuth: FirebaseAuth,
-private val db: FirebaseFirestore) : RemoteDataProvider {
+class FireStoreProvider(
+    private val firebaseAuth: FirebaseAuth,
+    private val db: FirebaseFirestore
+) : RemoteDataProvider {
 
-        companion object {
+    companion object {
         private val TAG = "${FireStoreProvider::class.java.simpleName} :"
     }
 
@@ -93,14 +95,8 @@ private val db: FirebaseFirestore) : RemoteDataProvider {
         }
 
 
-    override fun deleteAllNotes(notes: List<Note>): LiveData<NoteResult> {
-        for (i in notes.indices) {
-            getUserNotesCollection().document(notes[i].id)
-                .delete()
-                .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully deleted!") }
-                .addOnFailureListener { e -> Log.w(TAG, "Error deleting document", e) }
-        }
-        return subscribeToAllNotes()
+    override fun deleteAllNotes() {
+
     }
 
     private val currentUser
