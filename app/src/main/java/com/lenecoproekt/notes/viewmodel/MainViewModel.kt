@@ -13,7 +13,7 @@ import com.lenecoproekt.notes.ui.activity.MainViewState
 import com.lenecoproekt.notes.ui.activity.SplashViewState
 import com.lenecoproekt.notes.ui.base.BaseViewModel
 
-class MainViewModel(val repository: Repository) :
+class MainViewModel(val repository: Repository = Repository) :
     BaseViewModel<List<Note>?, MainViewState>() {
 
     private val repositoryNotes = repository.getNotes()

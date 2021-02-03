@@ -14,12 +14,10 @@ import java.lang.Exception
 private const val NOTES_COLLECTION = "notes"
 private const val USERS_COLLECTION = "users"
 
-class FireStoreProvider(
-    private val firebaseAuth: FirebaseAuth,
-    private val db: FirebaseFirestore
-) : RemoteDataProvider {
+class FireStoreProvider (private val firebaseAuth: FirebaseAuth,
+private val db: FirebaseFirestore) : RemoteDataProvider {
 
-    companion object {
+        companion object {
         private val TAG = "${FireStoreProvider::class.java.simpleName} :"
     }
 
@@ -106,7 +104,7 @@ class FireStoreProvider(
     }
 
     private val currentUser
-        get() = FirebaseAuth.getInstance().currentUser
+        get() = firebaseAuth.currentUser
 
     private fun getUserNotesCollection() = currentUser?.let {
         db.collection(USERS_COLLECTION).document(it.uid).collection(NOTES_COLLECTION)

@@ -21,12 +21,13 @@ import com.lenecoproekt.notes.model.Note
 import com.lenecoproekt.notes.ui.base.BaseActivity
 import com.lenecoproekt.notes.ui.format
 import com.lenecoproekt.notes.ui.getColorInt
+import com.lenecoproekt.notes.viewmodel.MainViewModel
 import com.lenecoproekt.notes.viewmodel.NoteViewModel
 import org.koin.android.ext.android.inject
 import java.util.*
 
 
-private const val SAVE_DELAY = 2000L
+private const val SAVE_DELAY = 1000L
 
 class NoteActivity : BaseActivity<NoteViewState.Data, NoteViewState>() {
 
@@ -42,10 +43,10 @@ class NoteActivity : BaseActivity<NoteViewState.Data, NoteViewState>() {
     private var note: Note? = null
     private var color: Color = Color.YELLOW
     override val ui: ActivityNoteBinding by lazy { ActivityNoteBinding.inflate(layoutInflater) }
-    override val viewModel: NoteViewModel by inject()
+    override val viewModel: NoteViewModel by lazy {ViewModelProvider(this).get(NoteViewModel::class.java)}
     private val textChangeListener = object : TextWatcher {
         override fun afterTextChanged(s: Editable?) {
-            // not used
+
         }
 
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -53,7 +54,7 @@ class NoteActivity : BaseActivity<NoteViewState.Data, NoteViewState>() {
         }
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            // not used
+
         }
     }
 

@@ -5,7 +5,7 @@ import com.lenecoproekt.notes.model.Repository
 import com.lenecoproekt.notes.ui.activity.SplashViewState
 import com.lenecoproekt.notes.ui.base.BaseViewModel
 
-class SplashViewModel(private val repository: Repository) : BaseViewModel<Boolean?, SplashViewState>() {
+class SplashViewModel(val repository: Repository = Repository) : BaseViewModel<Boolean?, SplashViewState>() {
 
     fun requestUser() {
         repository.getCurrentUser().observeForever {user->
