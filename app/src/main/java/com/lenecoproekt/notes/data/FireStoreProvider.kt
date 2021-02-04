@@ -94,11 +94,6 @@ class FireStoreProvider(
             }
         }
 
-
-    override fun deleteAllNotes() {
-
-    }
-
     private val currentUser
         get() = firebaseAuth.currentUser
 
