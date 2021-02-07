@@ -42,8 +42,10 @@ class NoteActivity : BaseActivity<NoteViewState.Data, NoteViewState>() {
         }
     }
 
+    private var changeTextColor: Boolean = false
     private var note: Note? = null
     private var color: Color = Color.YELLOW
+    private var textColor : Color = Color.BLACK
     override val ui: ActivityNoteBinding by lazy { ActivityNoteBinding.inflate(layoutInflater) }
     override val viewModel: NoteViewModel by viewModel()
     private val textChangeListener = object : TextWatcher {
@@ -72,9 +74,19 @@ class NoteActivity : BaseActivity<NoteViewState.Data, NoteViewState>() {
             supportActionBar?.title = "New note"
         }
         ui.colorPicker.onColorClickListener = {
-            color = it
-            setToolbarColor(it)
-            triggerSaveNote()
+            if (changeTextColor) {
+                textColor = it
+                ui.titleEdit.setTextColor(it.getColorInt(this@NoteActivity))
+                ui.bodyTextEdit.setTextColor(it.getColorInt(this@NoteActivity))
+                triggerSaveNote()
+            } else {
+                color = it
+                ui.titleEdit.setBackgroundColor(it.getColorInt(this@NoteActivity))
+                ui.bodyTextEdit.setBackgroundColor(it.getColorInt(this@NoteActivity))
+                ui.noteContainer.setBackgroundColor(it.getColorInt(this@NoteActivity))
+                setToolbarColor(it)
+                triggerSaveNote()
+            }
         }
         setEditListener()
     }
@@ -85,12 +97,16 @@ class NoteActivity : BaseActivity<NoteViewState.Data, NoteViewState>() {
             removeEditListener()
             if (title != ui.titleEdit.text.toString()) {
                 ui.titleEdit.setText(title)
+                ui.titleEdit.setTextColor(textColor.getColorInt(this@NoteActivity))
+                ui.titleEdit.setBackgroundColor(color.getColorInt(this@NoteActivity))
             }
             if (note != ui.bodyTextEdit.text.toString()) {
                 ui.bodyTextEdit.setText(note)
+                ui.bodyTextEdit.setTextColor(textColor.getColorInt(this@NoteActivity))
+                ui.bodyTextEdit.setBackgroundColor(color.getColorInt(this@NoteActivity))
             }
+            ui.noteContainer.setBackgroundColor(color.getColorInt(this@NoteActivity))
             setEditListener()
-
             supportActionBar?.title = lastChanged.format()
             setToolbarColor(color)
         }
@@ -120,15 +136,17 @@ class NoteActivity : BaseActivity<NoteViewState.Data, NoteViewState>() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         android.R.id.home -> super.onBackPressed().let { true }
-        R.id.palette -> togglePalette().let { true }
+        R.id.palette -> togglePalette(false).let { true }
+        R.id.textPalette -> togglePalette(true).let { true }
         R.id.delete -> removeNote().let { true }
         else -> super.onOptionsItemSelected(item)
     }
 
-    private fun togglePalette() {
+    private fun togglePalette(textColor: Boolean) {
         if (ui.colorPicker.isOpen) {
             ui.colorPicker.close()
         } else {
+            changeTextColor = textColor
             ui.colorPicker.open()
         }
     }
@@ -149,7 +167,8 @@ class NoteActivity : BaseActivity<NoteViewState.Data, NoteViewState>() {
                 title = ui.titleEdit.text.toString(),
                 note = ui.bodyTextEdit.text.toString(),
                 lastChanged = Date(),
-                color = color
+                color = color,
+                textColor = textColor
             ) ?: createNewNote()
             if (note != null) viewModel.saveChanges(note!!)
         }, SAVE_DELAY)
@@ -159,7 +178,8 @@ class NoteActivity : BaseActivity<NoteViewState.Data, NoteViewState>() {
         UUID.randomUUID().toString(),
         ui.titleEdit.text.toString(),
         ui.bodyTextEdit.text.toString(),
-        color = color
+        color = color,
+        textColor = textColor
     )
 
     override fun renderData(data: NoteViewState.Data) {

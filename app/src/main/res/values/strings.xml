@@ -17,6 +17,7 @@
     <string name="change_color_menu_title">Change note background color</string>
     <string name="delete_menu_title">Remove note</string>
     <string name="delete_dialog_message">Are you sure?</string>
+    <string name="change_text_color">Change text color</string>
 
 
     <string-array name="spinner_array">

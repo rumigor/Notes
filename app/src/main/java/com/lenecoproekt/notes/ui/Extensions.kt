@@ -25,6 +25,7 @@ fun Color.getColorRes(): Int = when (this) {
     Color.PINK -> R.color.color_pink
     Color.GREEN -> R.color.color_green
     Color.BLUE -> R.color.color_blue
+    Color.BLACK -> R.color.black
 }
 
 fun Context.dip(value: Int): Int = (value * resources.displayMetrics.density).toInt()

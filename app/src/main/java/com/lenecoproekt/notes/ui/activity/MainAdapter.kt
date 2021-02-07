@@ -1,5 +1,7 @@
 package com.lenecoproekt.notes.ui.activity
 
+import android.app.Activity
+import android.content.Context
 import android.view.*
 import androidx.recyclerview.widget.RecyclerView
 import com.lenecoproekt.notes.R
@@ -52,6 +54,8 @@ class MainAdapter(private val onItemClickListener: OnItemClickListener) :
             with(note) {
                 ui.title.text = this.title
                 ui.body.text = this.note
+                ui.title.setTextColor(this.textColor.getColorInt(itemView.context))
+                ui.body.setTextColor(this.textColor.getColorInt(itemView.context))
                 ui.container.setCardBackgroundColor(this.color.getColorInt(itemView.context))
                 itemView.setOnClickListener { onItemClickListener.onItemClick(this) }
             }

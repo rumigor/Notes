@@ -10,6 +10,7 @@ data class Note(
     val title: String = "",
     val note: String = "",
     var color: Color = Color.YELLOW,
+    val textColor : Color = Color.BLACK,
     val lastChanged: Date = Date()
 ) : Parcelable {
     override fun equals(other: Any?): Boolean {
@@ -35,5 +36,6 @@ enum class Color {
     BLUE,
     RED,
     VIOLET,
-    PINK
+    PINK,
+    BLACK
 }
