@@ -46,8 +46,8 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'com.google.firebase:firebase-core:18.0.1'
-    implementation 'com.google.firebase:firebase-firestore:22.0.1'
+    implementation 'com.google.firebase:firebase-core:18.0.2'
+    implementation 'com.google.firebase:firebase-firestore:22.0.2'
     implementation 'com.google.firebase:firebase-auth:20.0.2'
     implementation 'com.firebaseui:firebase-ui-auth:6.4.0'
     implementation "org.koin:koin-android:2.2.0"
@@ -59,7 +59,10 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
     def room_version = "2.2.6"
     implementation "androidx.room:room-runtime:$room_version"
-    testImplementation 'junit:junit:4.+'
+    testImplementation 'junit:junit:4.13.1'
+    testImplementation 'androidx.arch.core:core-testing:2.1.0'
+    testImplementation 'androidx.arch.core:core-common:2.1.0'
+    testImplementation "io.mockk:mockk:1.10.5"
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 }
