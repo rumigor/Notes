@@ -9,6 +9,7 @@ import com.lenecoproekt.notes.ui.activity.MainViewState
 import com.lenecoproekt.notes.ui.activity.NoteViewState
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.slot
 import org.junit.After
 import org.junit.Before
 
@@ -31,8 +32,8 @@ class NoteViewModelTest {
     @Before
     fun setUp() {
 
-        every { mockRepository.getNoteById(any()) } returns notesLiveData
-        every { mockRepository.removeNote(any()) } returns mockk()
+
+
         viewModel = NoteViewModel(mockRepository)
 
     }
@@ -43,7 +44,9 @@ class NoteViewModelTest {
         val testData = NoteViewState.Data(false, testNotes[1])
         viewModel.getViewState().observeForever { result = it.data }
         notesLiveData.value = NoteResult.Success(testData)
+        every { mockRepository.getNoteById(testNotes[1].id) } returns this.notesLiveData
         viewModel.loadNote(testNotes[1].id)
+        viewModel.getViewState().observeForever { result = it.data }
         assertEquals(testData, result)
     }
 
@@ -55,12 +58,13 @@ class NoteViewModelTest {
 
     @Test
     fun `should remove note`() {
-//        val testData = NoteViewState.Data(true)
-//        viewStateLiveData.postValue(NoteViewState(NoteViewState.Data(true)
-//
-//        notesLiveData.value = NoteResult.Success(testData)
-//        viewModel.removeNote()
-//        assertEquals(testData, viewModel.getViewState().value?.data)
+        val testData = NoteViewState.Data(true)
+        var result = NoteViewState.Data(false, testNotes[1])
+        viewStateLiveData.postValue(NoteViewState(NoteViewState.Data(true)))
+        notesLiveData.value = NoteResult.Success(testData)
+        every { mockRepository.removeNote(any()) } returns notesLiveData
+        viewModel.removeNote()
+        assertEquals(testData, result)
     }
 
 
