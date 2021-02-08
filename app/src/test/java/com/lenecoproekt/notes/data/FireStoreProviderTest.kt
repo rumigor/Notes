@@ -121,6 +121,22 @@ class FireStoreProviderTest {
         assertEquals(testNotes[0], result)
     }
 
+    @Test
+    fun `removeNote return null`() {
+        var result: Note? = null
+        val mockDocumentReference: DocumentReference = mockk()
+        val slot = slot<OnSuccessListener<in Void>>()
+
+        every { mockCollection.document(testNotes[0].id) } returns mockDocumentReference
+        every { mockDocumentReference.delete().addOnSuccessListener { capture(slot) } } returns mockk()
+
+        provider.removeNote(testNotes[0].id).observeForever {
+            result = (it as? NoteResult.Success<Note>)?.data
+        }
+
+        assertEquals(null, result)
+    }
+
 
     @After
     fun tearDown() {
