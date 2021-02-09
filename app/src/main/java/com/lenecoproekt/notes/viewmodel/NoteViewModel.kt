@@ -1,5 +1,6 @@
 package com.lenecoproekt.notes.viewmodel
 
+import androidx.annotation.VisibleForTesting
 import com.lenecoproekt.notes.model.Note
 import com.lenecoproekt.notes.model.NoteResult
 import com.lenecoproekt.notes.model.Repository
@@ -17,7 +18,8 @@ class NoteViewModel(val repository: Repository) :
         viewStateLiveData.value = NoteViewState(NoteViewState.Data(note = note))
     }
 
-    override fun onCleared() {
+    @VisibleForTesting
+    public override fun onCleared() {
         currentNote?.let { repository.saveNote(it) }
     }
 

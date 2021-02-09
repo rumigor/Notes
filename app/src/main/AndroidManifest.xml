@@ -20,8 +20,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.activity.NoteActivity" />
-        <activity android:name=".ui.activity.MainActivity">
-        </activity>
+        <activity android:name=".ui.activity.MainActivity" />
     </application>
 
 </manifest>
