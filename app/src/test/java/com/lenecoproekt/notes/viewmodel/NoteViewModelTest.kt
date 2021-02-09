@@ -29,9 +29,9 @@ class NoteViewModelTest {
         Note("444", "title1", "body1"),
         Note("555", "title2", "body2")
     )
+
     @Before
     fun setUp() {
-
 
 
         viewModel = NoteViewModel(mockRepository)
@@ -39,32 +39,9 @@ class NoteViewModelTest {
     }
 
     @Test
-    fun `should load note`() {
-        var result: NoteViewState.Data? = null
-        val testData = NoteViewState.Data(false, testNotes[1])
-        viewModel.getViewState().observeForever { result = it.data }
-        notesLiveData.value = NoteResult.Success(testData)
-        every { mockRepository.getNoteById(testNotes[1].id) } returns this.notesLiveData
-        viewModel.loadNote(testNotes[1].id)
-        viewModel.getViewState().observeForever { result = it.data }
-        assertEquals(testData, result)
-    }
-
-    @Test
     fun `should remove observer`() {
         viewModel.onCleared()
         assertFalse(notesLiveData.hasObservers())
-    }
-
-    @Test
-    fun `should remove note`() {
-        val testData = NoteViewState.Data(true)
-        var result = NoteViewState.Data(false, testNotes[1])
-        viewStateLiveData.postValue(NoteViewState(NoteViewState.Data(true)))
-        notesLiveData.value = NoteResult.Success(testData)
-        every { mockRepository.removeNote(any()) } returns notesLiveData
-        viewModel.removeNote()
-        assertEquals(testData, result)
     }
 
 
