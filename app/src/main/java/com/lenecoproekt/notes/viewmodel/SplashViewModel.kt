@@ -2,16 +2,16 @@ package com.lenecoproekt.notes.viewmodel
 
 import com.lenecoproekt.notes.data.NoAuthException
 import com.lenecoproekt.notes.model.Repository
-import com.lenecoproekt.notes.ui.activity.SplashViewState
 import com.lenecoproekt.notes.ui.base.BaseViewModel
+import kotlinx.coroutines.launch
 
-class SplashViewModel(val repository: Repository) : BaseViewModel<Boolean?, SplashViewState>() {
+class SplashViewModel(val repository: Repository) : BaseViewModel<Boolean>() {
 
     fun requestUser() {
-        repository.getCurrentUser().observeForever {user->
-            viewStateLiveData.value = user?.let {
-                SplashViewState(isAuth = true)
-            } ?: SplashViewState(error = NoAuthException())
+        launch {
+            repository.getCurrentUser()?.let {
+                setData(true)
+            } ?: setError(NoAuthException())
         }
     }
 }

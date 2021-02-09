@@ -40,7 +40,7 @@ class MainActivityTest {
     private val EXTRA_NOTE = "NoteActivity.extra.NOTE"
 
     private val viewModel: MainViewModel = mockk(relaxed = true)
-    private val viewStateLiveData = MutableLiveData<MainViewState>()
+
     private val testNotes = listOf(
         Note("333", "title", "body"),
         Note("444", "title1", "body1"),
@@ -61,11 +61,11 @@ class MainActivityTest {
                 })
         )
 
-        every { viewModel.getViewState() } returns viewStateLiveData
-        every { viewModel.requestUser().value?.name } returns ""
+//        every { viewModel.getViewState() } returns viewStateLiveData
+//        every { viewModel.requestUser().value?.name } returns ""
 
         activityTestRule.launchActivity(null)
-        viewStateLiveData.postValue(MainViewState(notes = testNotes))
+//        viewStateLiveData.postValue(MainViewState(notes = testNotes))
 
     }
 

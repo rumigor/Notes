@@ -36,7 +36,6 @@ class NoteActivityTest {
     val activityTestRule = ActivityTestRule(NoteActivity::class.java, true, false)
 
     private val viewModel: NoteViewModel = spyk(NoteViewModel(mockk()))
-    private val viewStateLiveData = MutableLiveData<NoteViewState>()
     private val testNote = Note("333", "title", "body")
 
     @Before
@@ -50,7 +49,7 @@ class NoteActivityTest {
                     viewModel { viewModel }
                 })
         )
-        every { viewModel.getViewState() } returns viewStateLiveData
+//        every { viewModel.getViewState() } returns viewStateLiveData
         every { viewModel.loadNote(any()) } just runs
         every { viewModel.saveChanges(any()) } just runs
         every { viewModel.removeNote() } just runs
@@ -102,7 +101,7 @@ class NoteActivityTest {
     @Test
     fun should_show_note() {
         activityTestRule.launchActivity(null)
-        viewStateLiveData.postValue(NoteViewState(NoteViewState.Data(note = testNote)))
+//        viewStateLiveData.postValue(NoteViewState(NoteViewState.Data(note = testNote)))
 
         onView(withId(R.id.titleEdit)).check(matches(withText(testNote.title)))
         onView(withId(R.id.bodyTextEdit)).check(matches(withText(testNote.note)))

@@ -5,11 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.lenecoproekt.notes.model.Note
 import com.lenecoproekt.notes.model.NoteResult
 import com.lenecoproekt.notes.model.Repository
-import com.lenecoproekt.notes.ui.activity.MainViewState
-import com.lenecoproekt.notes.ui.activity.NoteViewState
-import io.mockk.every
 import io.mockk.mockk
-import io.mockk.slot
 import org.junit.After
 import org.junit.Before
 
@@ -22,7 +18,7 @@ class NoteViewModelTest {
     val taskExecutorRule = InstantTaskExecutorRule()
     private val mockRepository = mockk<Repository>()
     private val notesLiveData = MutableLiveData<NoteResult>()
-    private val viewStateLiveData = MutableLiveData<NoteViewState>()
+
     private lateinit var viewModel: NoteViewModel
     private val testNotes = listOf(
         Note("333", "title", "body"),

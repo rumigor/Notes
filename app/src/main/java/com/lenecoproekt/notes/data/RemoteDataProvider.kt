@@ -1,15 +1,16 @@
 
 package com.lenecoproekt.notes.data
 
-import androidx.lifecycle.LiveData
+
 import com.lenecoproekt.notes.model.Note
 import com.lenecoproekt.notes.model.NoteResult
 import com.lenecoproekt.notes.model.User
+import kotlinx.coroutines.channels.ReceiveChannel
 
 interface RemoteDataProvider {
-    fun subscribeToAllNotes(): LiveData<NoteResult>
-    fun getNoteById(id: String): LiveData<NoteResult>
-    fun saveNote(note: Note) : LiveData<NoteResult>
-    fun removeNote(id :String) : LiveData<NoteResult>
-    fun getCurrentUser(): LiveData<User?>
+    suspend fun subscribeToAllNotes(): ReceiveChannel<NoteResult>
+    suspend fun getNoteById(id: String): Note
+    suspend fun saveNote(note: Note) : Note
+    suspend fun removeNote(id :String) : Note?
+    suspend fun getCurrentUser(): User?
 }

@@ -24,6 +24,8 @@ import com.lenecoproekt.notes.ui.getColorInt
 import com.lenecoproekt.notes.ui.getColorRes
 import com.lenecoproekt.notes.viewmodel.MainViewModel
 import com.lenecoproekt.notes.viewmodel.NoteViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 import java.util.*
@@ -31,7 +33,7 @@ import java.util.*
 
 private const val SAVE_DELAY = 1000L
 
-class NoteActivity : BaseActivity<NoteViewState.Data, NoteViewState>() {
+class NoteActivity : BaseActivity<Data>() {
 
     companion object {
         const val EXTRA_NOTE = "NoteActivity.extra.NOTE"
@@ -45,7 +47,7 @@ class NoteActivity : BaseActivity<NoteViewState.Data, NoteViewState>() {
     private var changeTextColor: Boolean = false
     private var note: Note? = null
     private var color: Color = Color.YELLOW
-    private var textColor : Color = Color.BLACK
+    private var textColor: Color = Color.BLACK
     override val ui: ActivityNoteBinding by lazy { ActivityNoteBinding.inflate(layoutInflater) }
     override val viewModel: NoteViewModel by viewModel()
     private val textChangeListener = object : TextWatcher {
@@ -162,7 +164,9 @@ class NoteActivity : BaseActivity<NoteViewState.Data, NoteViewState>() {
     private fun triggerSaveNote() {
         if (ui.titleEdit.text == null || ui.titleEdit.text!!.length < 3) return
 
-        Handler(Looper.getMainLooper()).postDelayed({
+        launch {
+            delay(SAVE_DELAY)
+
             note = note?.copy(
                 title = ui.titleEdit.text.toString(),
                 note = ui.bodyTextEdit.text.toString(),
@@ -170,8 +174,8 @@ class NoteActivity : BaseActivity<NoteViewState.Data, NoteViewState>() {
                 color = color,
                 textColor = textColor
             ) ?: createNewNote()
-            if (note != null) viewModel.saveChanges(note!!)
-        }, SAVE_DELAY)
+            note?.let { viewModel.saveChanges(it) }
+        }
     }
 
     private fun createNewNote(): Note = Note(
@@ -182,7 +186,7 @@ class NoteActivity : BaseActivity<NoteViewState.Data, NoteViewState>() {
         textColor = textColor
     )
 
-    override fun renderData(data: NoteViewState.Data) {
+    override fun renderData(data: Data) {
         if (data.isRemoved) finish()
 
         this.note = data.note

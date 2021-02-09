@@ -9,27 +9,30 @@ import com.firebase.ui.auth.AuthUI
 import com.google.android.material.snackbar.Snackbar
 import com.lenecoproekt.notes.R
 import com.lenecoproekt.notes.data.NoAuthException
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.flow.consumeAsFlow
+import kotlin.coroutines.CoroutineContext
 
 private const val RC_SIGN_IN = 777
 
-abstract class BaseActivity<T, S : BaseViewState<T>> : AppCompatActivity() {
-
-    abstract val viewModel: BaseViewModel<T, S>
+abstract class BaseActivity<T> : AppCompatActivity(), CoroutineScope {
+    override val coroutineContext: CoroutineContext by lazy {
+        Dispatchers.Main + Job()
+    }
+    abstract val viewModel: BaseViewModel<T>
     abstract val ui: ViewBinding
+
+    private lateinit var dataJob: Job
+    private lateinit var errorJob: Job
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(ui.root)
-        viewModel.getViewState().observe(this, { t ->
-            t?.apply {
-                data?.let { renderData(it) }
-                error?.let { renderError(it) }
-            }
-        })
     }
 
     protected open fun renderError(error: Throwable) {
-        when(error) {
+        when (error) {
             is NoAuthException -> startLoginActivity()
             else -> error.message?.let { showError(it) }
         }
@@ -43,10 +46,12 @@ abstract class BaseActivity<T, S : BaseViewState<T>> : AppCompatActivity() {
             show()
         }
     }
+
     private fun startLoginActivity() {
         val providers = listOf(
             AuthUI.IdpConfig.EmailBuilder().build(),
-            AuthUI.IdpConfig.GoogleBuilder().build())
+            AuthUI.IdpConfig.GoogleBuilder().build()
+        )
 
         startActivityForResult(
             AuthUI.getInstance()
@@ -55,7 +60,8 @@ abstract class BaseActivity<T, S : BaseViewState<T>> : AppCompatActivity() {
                 .setTheme(R.style.LoginStyle)
                 .setAvailableProviders(providers)
                 .build(),
-            RC_SIGN_IN)
+            RC_SIGN_IN
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -63,5 +69,31 @@ abstract class BaseActivity<T, S : BaseViewState<T>> : AppCompatActivity() {
         if (requestCode == RC_SIGN_IN && resultCode != Activity.RESULT_OK) {
             finish()
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        dataJob = launch {
+            viewModel.getViewState().consumeEach {
+                renderData(it)
+            }
+        }
+
+        errorJob = launch {
+            viewModel.getErrorChannel().consumeEach {
+                renderError(it)
+            }
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        dataJob.cancel()
+        errorJob.cancel()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        coroutineContext.cancel()
     }
 }
