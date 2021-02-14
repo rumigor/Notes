@@ -8,43 +8,50 @@ import com.lenecoproekt.notes.model.Repository
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.consume
+import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 
 import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
+import java.lang.Error
 
 class MainViewModelTest {
 
     @get:Rule
     val taskExecutorRule = InstantTaskExecutorRule()
     private val mockRepository = mockk<Repository>()
-    private val notesLiveData = MutableLiveData<NoteResult>()
+    private val notesData = Channel<NoteResult>()
     private lateinit var viewModel: MainViewModel
 
 
-//    @Before
-//    fun setUp() {
-//        every { mockRepository.getNotes() } returns notesLiveData
-//        viewModel = MainViewModel(mockRepository)
-//    }
-//
-//    @Test
-//    fun `should call getNotes once`() {
-//        verify(exactly = 1) { mockRepository.getNotes() }
-//    }
-//
-//    @Test
-//    fun `should return error`() {
-//        var result: Throwable? = null
-//        val testData = Throwable("error")
-//        viewModel.getViewState().observeForever { result = it?.error }
-//        notesLiveData.value = NoteResult.Error(testData)
-//        assertEquals(result, testData)
-//    }
-//
-//
+    @Before
+    fun setUp() {
+        every { runBlocking { mockRepository.getNotes() } } returns notesData
+        viewModel = MainViewModel(mockRepository)
+    }
+
+    @Test
+    fun `should call getNotes once`() {
+        verify(exactly = 1) { runBlocking { mockRepository.getNotes() } }
+    }
+
+    @Test
+    fun `should return error`() {
+        var result: Throwable? = null
+        val testData = Throwable("error")
+        runBlocking {
+            viewModel.getErrorChannel().consumeEach { result = Throwable() }
+            notesData.send(NoteResult.Error(testData))
+            assertEquals(result, testData)
+        }
+    }
+
+
 //    @Test
 //    fun `should return Notes`() {
 //        var result: List<Note>? = null
@@ -62,5 +69,6 @@ class MainViewModelTest {
 
     @After
     fun tearDown() {
+        notesData.cancel()
     }
 }
