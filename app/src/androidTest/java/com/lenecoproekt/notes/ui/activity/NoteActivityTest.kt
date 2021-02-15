@@ -2,7 +2,6 @@ package com.lenecoproekt.notes.ui.activity
 
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
-import androidx.lifecycle.MutableLiveData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
 import androidx.test.espresso.action.ViewActions.click
@@ -20,7 +19,6 @@ import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
-
 import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
@@ -36,7 +34,6 @@ class NoteActivityTest {
     val activityTestRule = ActivityTestRule(NoteActivity::class.java, true, false)
 
     private val viewModel: NoteViewModel = spyk(NoteViewModel(mockk()))
-    private val viewStateLiveData = MutableLiveData<NoteViewState>()
     private val testNote = Note("333", "title", "body")
 
     @Before
@@ -50,11 +47,10 @@ class NoteActivityTest {
                     viewModel { viewModel }
                 })
         )
-        every { viewModel.getViewState() } returns viewStateLiveData
+        viewModel.setData(Data(false, testNote))
         every { viewModel.loadNote(any()) } just runs
         every { viewModel.saveChanges(any()) } just runs
         every { viewModel.removeNote() } just runs
-
         activityTestRule.launchActivity(Intent().apply {
             putExtra("NoteActivity.extra.NOTE", testNote.id)
         })
@@ -102,8 +98,7 @@ class NoteActivityTest {
     @Test
     fun should_show_note() {
         activityTestRule.launchActivity(null)
-        viewStateLiveData.postValue(NoteViewState(NoteViewState.Data(note = testNote)))
-
+        viewModel.setData(Data(false, testNote))
         onView(withId(R.id.titleEdit)).check(matches(withText(testNote.title)))
         onView(withId(R.id.bodyTextEdit)).check(matches(withText(testNote.note)))
     }
@@ -120,7 +115,7 @@ class NoteActivityTest {
         openActionBarOverflowOrOptionsMenu(activityTestRule.activity)
         onView(withText(R.string.delete_dialog_message)).perform(click())
         onView(withText(R.string.ok_bth_title)).perform(click())
-        verify (exactly = 1) { viewModel.removeNote() }
+        verify(exactly = 1) { viewModel.removeNote() }
     }
 
 

@@ -10,10 +10,10 @@ import org.koin.android.viewmodel.ext.android.viewModel
 
 private const val START_DELAY = 1000L
 
-class SplashActivity : BaseActivity<Boolean?, SplashViewState>() {
+class SplashActivity : BaseActivity<Boolean>() {
 
     override val viewModel: SplashViewModel by viewModel()
-    override val ui: ActivitySplashBinding by lazy {ActivitySplashBinding.inflate(layoutInflater)}
+    override val ui: ActivitySplashBinding by lazy { ActivitySplashBinding.inflate(layoutInflater) }
 
 
     override fun onResume() {
@@ -21,10 +21,8 @@ class SplashActivity : BaseActivity<Boolean?, SplashViewState>() {
         Handler(Looper.getMainLooper()).postDelayed({ viewModel.requestUser() }, START_DELAY)
     }
 
-    override fun renderData(data: Boolean?) {
-        data?.takeIf{ it }?.let {
-            startMainActivity()
-        }
+    override fun renderData(data: Boolean) {
+        if (data) startMainActivity()
     }
 
 

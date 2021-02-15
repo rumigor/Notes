@@ -13,7 +13,7 @@ import com.lenecoproekt.notes.viewmodel.MainViewModel
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 
-class MainActivity : BaseActivity<List<Note>?, MainViewState>(), LogoutDialog.LogoutListener {
+class MainActivity : BaseActivity<List<Note>?>(), LogoutDialog.LogoutListener {
 
     override val viewModel: MainViewModel by viewModel()
     override val ui: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
@@ -30,7 +30,7 @@ class MainActivity : BaseActivity<List<Note>?, MainViewState>(), LogoutDialog.Lo
 
         setSupportActionBar(ui.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = (viewModel.requestUser().value?.name + " notes")
+        supportActionBar?.title = viewModel.requestUser()?.name + " notes"
         adapter = MainAdapter(object : OnItemClickListener {
             override fun onItemClick(note: Note) {
                 openNoteScreen(note)
