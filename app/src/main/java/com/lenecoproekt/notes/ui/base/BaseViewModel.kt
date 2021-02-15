@@ -22,13 +22,13 @@ open class BaseViewModel<T> : ViewModel(), CoroutineScope {
     fun getViewState(): ReceiveChannel<T> = viewStateChannel.openSubscription()
     fun getErrorChannel(): ReceiveChannel<Throwable> = errorChannel
 
-    protected fun setError(e: Throwable){
+    fun setError(e: Throwable){
         launch {
             errorChannel.send(e)
         }
     }
 
-    protected fun setData(data: T){
+    fun setData(data: T){
         launch {
             viewStateChannel.send(data)
         }

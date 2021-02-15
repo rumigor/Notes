@@ -1,6 +1,6 @@
 package com.lenecoproekt.notes.ui.activity
 
-import androidx.lifecycle.MutableLiveData
+
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -13,16 +13,18 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.lenecoproekt.notes.R
 import com.lenecoproekt.notes.model.Note
-import com.lenecoproekt.notes.model.User
+
 import com.lenecoproekt.notes.viewmodel.MainViewModel
 import com.lenecoproekt.notes.viewmodel.NoteViewModel
 import io.mockk.every
 import io.mockk.mockk
+
+import kotlinx.coroutines.runBlocking
 import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
 
-import org.junit.Assert.*
+
 import org.junit.Rule
 import org.junit.Test
 import org.koin.android.viewmodel.dsl.viewModel
@@ -30,6 +32,7 @@ import org.koin.core.context.loadKoinModules
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
+
 
 class MainActivityTest {
 
@@ -61,11 +64,12 @@ class MainActivityTest {
                 })
         )
 
-//        every { viewModel.getViewState() } returns viewStateLiveData
-//        every { viewModel.requestUser().value?.name } returns ""
+        runBlocking {
+            viewModel.setData(testNotes)
+            every { viewModel.requestUser()?.name } returns ""
+        }
 
         activityTestRule.launchActivity(null)
-//        viewStateLiveData.postValue(MainViewState(notes = testNotes))
 
     }
 
