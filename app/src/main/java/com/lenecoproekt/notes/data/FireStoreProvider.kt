@@ -9,17 +9,19 @@ import com.google.firebase.firestore.*
 import com.lenecoproekt.notes.model.Note
 import com.lenecoproekt.notes.model.NoteResult
 import com.lenecoproekt.notes.model.User
+import java.lang.Exception
 
 private const val NOTES_COLLECTION = "notes"
 private const val USERS_COLLECTION = "users"
 
-class FireStoreProvider : RemoteDataProvider {
+class FireStoreProvider(
+    private val firebaseAuth: FirebaseAuth,
+    private val db: FirebaseFirestore
+) : RemoteDataProvider {
 
     companion object {
         private val TAG = "${FireStoreProvider::class.java.simpleName} :"
     }
-
-    private val db = FirebaseFirestore.getInstance()
 
     override fun subscribeToAllNotes(): LiveData<NoteResult> {
         return MutableLiveData<NoteResult>().apply {
@@ -71,34 +73,29 @@ class FireStoreProvider : RemoteDataProvider {
                             throw exception
                         }
                     }
-            } catch (error : Throwable){
+            } catch (error: Throwable) {
                 value = NoteResult.Error(error)
             }
 
         }
     }
 
-    override fun removeNote(id: String): LiveData<NoteResult> {
-        getUserNotesCollection().document(id)
-            .delete()
-            .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully deleted!") }
-            .addOnFailureListener { e -> Log.w(TAG, "Error deleting document", e) }
-
-        return subscribeToAllNotes()
-    }
-
-    override fun deleteAllNotes(notes: List<Note>): LiveData<NoteResult> {
-        for (i in notes.indices) {
-            getUserNotesCollection().document(notes[i].id)
-                .delete()
-                .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully deleted!") }
-                .addOnFailureListener { e -> Log.w(TAG, "Error deleting document", e) }
+    override fun removeNote(id: String): LiveData<NoteResult> =
+        MutableLiveData<NoteResult>().apply {
+            try {
+                getUserNotesCollection().document(id)
+                    .delete()
+                    .addOnSuccessListener {
+                        value = NoteResult.Success(null)
+                    }
+                    .addOnFailureListener { throw it }
+            } catch (error: Exception) {
+                value = NoteResult.Error(error)
+            }
         }
-        return subscribeToAllNotes()
-    }
 
     private val currentUser
-        get() = FirebaseAuth.getInstance().currentUser
+        get() = firebaseAuth.currentUser
 
     private fun getUserNotesCollection() = currentUser?.let {
         db.collection(USERS_COLLECTION).document(it.uid).collection(NOTES_COLLECTION)
@@ -106,7 +103,11 @@ class FireStoreProvider : RemoteDataProvider {
 
     override fun getCurrentUser(): LiveData<User?> =
         MutableLiveData<User?>().apply {
-            value = currentUser?.let { User(it.displayName ?: "",
-                it.email ?: "") }
+            value = currentUser?.let {
+                User(
+                    it.displayName ?: "",
+                    it.email ?: ""
+                )
+            }
         }
 }

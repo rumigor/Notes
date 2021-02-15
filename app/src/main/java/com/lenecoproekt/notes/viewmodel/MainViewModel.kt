@@ -13,7 +13,7 @@ import com.lenecoproekt.notes.ui.activity.MainViewState
 import com.lenecoproekt.notes.ui.activity.SplashViewState
 import com.lenecoproekt.notes.ui.base.BaseViewModel
 
-class MainViewModel(val repository: Repository = Repository) :
+class MainViewModel(val repository: Repository) :
     BaseViewModel<List<Note>?, MainViewState>() {
 
     private val repositoryNotes = repository.getNotes()
@@ -47,11 +47,17 @@ class MainViewModel(val repository: Repository = Repository) :
         repository.removeNote(id)
     }
 
-    fun deleteAllNotes(notes: List<Note>) {
-        repository.deleteAllNotes(notes)
+    fun deleteAllNotes() {
+        val notes = viewStateLiveData.value?.notes
+
+        notes?.let {
+            for (note in it) {
+                repository.removeNote(note.id)
+            }
+        }
     }
 
-    fun requestUser() : LiveData<User?> {
+    fun requestUser(): LiveData<User?> {
         return repository.getCurrentUser()
     }
 }
