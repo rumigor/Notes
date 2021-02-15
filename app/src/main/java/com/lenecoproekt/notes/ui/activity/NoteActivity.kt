@@ -13,6 +13,7 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.appcompat.app.AlertDialog
+import androidx.core.graphics.ColorUtils
 import androidx.lifecycle.ViewModelProvider
 import com.lenecoproekt.notes.R
 import com.lenecoproekt.notes.databinding.ActivityNoteBinding
@@ -75,6 +76,7 @@ class NoteActivity : BaseActivity<Data>() {
         } ?: run {
             supportActionBar?.title = "New note"
         }
+
         ui.colorPicker.onColorClickListener = {
             if (changeTextColor) {
                 textColor = it
@@ -99,14 +101,12 @@ class NoteActivity : BaseActivity<Data>() {
             removeEditListener()
             if (title != ui.titleEdit.text.toString()) {
                 ui.titleEdit.setText(title)
-                ui.titleEdit.setTextColor(textColor.getColorInt(this@NoteActivity))
-                ui.titleEdit.setBackgroundColor(color.getColorInt(this@NoteActivity))
             }
             if (note != ui.bodyTextEdit.text.toString()) {
                 ui.bodyTextEdit.setText(note)
-                ui.bodyTextEdit.setTextColor(textColor.getColorInt(this@NoteActivity))
-                ui.bodyTextEdit.setBackgroundColor(color.getColorInt(this@NoteActivity))
             }
+            ui.titleEdit.setTextColor(textColor.getColorInt(this@NoteActivity))
+            ui.titleEdit.setBackgroundColor(color.getColorInt(this@NoteActivity))
             ui.noteContainer.setBackgroundColor(color.getColorInt(this@NoteActivity))
             setEditListener()
             supportActionBar?.title = lastChanged.format()
@@ -115,21 +115,22 @@ class NoteActivity : BaseActivity<Data>() {
     }
 
     private fun setToolbarColor(color: Color) {
-        ui.toolbar.setBackgroundColor(color.getColorInt(this@NoteActivity))
-        when (color) {
-            Color.WHITE, Color.YELLOW -> ui.toolbar.setTitleTextColor(
-                resources.getColor(
-                    R.color.black,
-                    theme
-                )
+        val outHSL = FloatArray(3)
+        val colorInt = color.getColorInt(this@NoteActivity)
+        ui.toolbar.setBackgroundColor(colorInt)
+        ColorUtils.colorToHSL(colorInt, outHSL)
+        if (outHSL[2] > 0.8f) ui.toolbar.setTitleTextColor(
+            resources.getColor(
+                R.color.black,
+                theme
             )
-            else -> ui.toolbar.setTitleTextColor(
-                resources.getColor(
-                    R.color.white,
-                    theme
-                )
+        )
+        else ui.toolbar.setTitleTextColor(
+            resources.getColor(
+                R.color.white,
+                theme
             )
-        }
+        )
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean =
@@ -188,9 +189,9 @@ class NoteActivity : BaseActivity<Data>() {
 
     override fun renderData(data: Data) {
         if (data.isRemoved) finish()
-
         this.note = data.note
         data.note?.let { color = it.color }
+        data.note?.let { textColor = it.textColor }
         initView()
     }
 

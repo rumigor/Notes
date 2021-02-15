@@ -38,8 +38,7 @@ class FireStoreProvider(
                             val notes = querySnapshot.documents.map { documentSnapshot ->
                                 documentSnapshot.toObject(Note::class.java)
                             }
-                            notes.sortedByDescending { note -> note?.lastChanged }
-                            NoteResult.Success(notes)
+                            NoteResult.Success(notes.sortedByDescending { note -> note?.lastChanged })
                         }
 
                         value?.let { offer(it) }

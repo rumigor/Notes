@@ -19,7 +19,6 @@ import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
-
 import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
