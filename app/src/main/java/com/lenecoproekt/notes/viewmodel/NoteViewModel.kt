@@ -12,7 +12,7 @@ class NoteViewModel(val repository: Repository) :
     BaseViewModel<Data>() {
 
     private val currentNote: Note?
-        get() = getViewState().poll()?.note
+        get() = getViewState().tryReceive().getOrNull()?.note
 
     fun saveChanges(note: Note) {
         setData(Data(note = note))

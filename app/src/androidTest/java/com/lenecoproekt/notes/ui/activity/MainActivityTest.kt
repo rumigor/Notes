@@ -13,13 +13,20 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.lenecoproekt.notes.R
 import com.lenecoproekt.notes.model.Note
+import com.lenecoproekt.notes.model.NoteResult
+import com.lenecoproekt.notes.ui.base.BaseActivity
 
 import com.lenecoproekt.notes.viewmodel.MainViewModel
 import com.lenecoproekt.notes.viewmodel.NoteViewModel
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.spyk
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.consumeEach
 
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.Dispatchers
 import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
@@ -41,8 +48,11 @@ class MainActivityTest {
 
 
     private val EXTRA_NOTE = "NoteActivity.extra.NOTE"
+    var testDispatcher =  Dispatchers.Default
+    private val viewModel: MainViewModel = spyk(MainViewModel(mockk()))
 
-    private val viewModel: MainViewModel = mockk(relaxed = true)
+    private val notesData = Channel<List<Note>?>()
+
 
     private val testNotes = listOf(
         Note("333", "title", "body"),
@@ -68,6 +78,11 @@ class MainActivityTest {
             viewModel.setData(testNotes)
             every { viewModel.requestUser()?.name } returns ""
         }
+
+       runBlocking {
+           notesData.send(testNotes)
+           every { viewModel.getViewState() } returns notesData
+       }
 
         activityTestRule.launchActivity(null)
 
@@ -97,5 +112,6 @@ class MainActivityTest {
     @After
     fun tearDown() {
         stopKoin()
+        testDispatcher.cancel()
     }
 }

@@ -1,12 +1,11 @@
 package com.lenecoproekt.notes.ui.activity
 
-import android.app.Activity
-import android.content.Context
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.lenecoproekt.notes.R
 import com.lenecoproekt.notes.databinding.ItemNoteBinding
-import com.lenecoproekt.notes.model.Color
 import com.lenecoproekt.notes.model.Note
 import com.lenecoproekt.notes.ui.getColorInt
 

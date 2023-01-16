@@ -9,6 +9,8 @@ import com.lenecoproekt.notes.model.NoteResult
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.channels.toList
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -76,42 +78,38 @@ class FireStoreProviderTest {
                     listOf(mockDocument1, mockDocument2, mockDocument3)
             every { mockCollection.addSnapshotListener(capture(slot)) } returns mockk()
 
-            provider.subscribeToAllNotes().apply {
-
-                result = (this as? NoteResult.Success<List<Note>>)?.data
-            }
+            provider.subscribeToAllNotes().let { result = (it as? NoteResult.Success<List<Note>>)?.data }
 
             slot.captured.onEvent(mockSnapshot, null)
 
             assertEquals(testNotes, result)
         }
     }
-//
-//
-//    @Test
-//    fun `subscribeAllNotes return error`() {
-//        var result: Throwable? = null
-//        val slot = slot<EventListener<QuerySnapshot>>()
-//        val testError = mockk<FirebaseFirestoreException>()
-//
-//        every { mockCollection.addSnapshotListener(capture(slot)) } returns mockk()
-//
-////        provider.subscribeToAllNotes().observeForever { result = (it as? NoteResult.Error)?.error }
-//
-//        slot.captured.onEvent(null, testError)
-//
-//        assertNotNull(result)
-//        assertEquals(testError, result)
-//    }
+
+
+    @Test
+    fun `subscribeAllNotes return error`() {
+        var result: Throwable? = null
+        val slot = slot<EventListener<QuerySnapshot>>()
+        val testError = mockk<FirebaseFirestoreException>()
+
+        every { mockCollection.addSnapshotListener(capture(slot)) } returns mockk()
+
+        runBlocking {provider.subscribeToAllNotes().let { result = (it as? NoteResult.Error)?.error }}
+
+        slot.captured.onEvent(null, testError)
+
+        assertNotNull(result)
+        assertEquals(testError, result)
+    }
 
     @Test
     fun `saveNote calls document set`() {
         runBlocking {
             val mockDocumentReference: DocumentReference = mockk()
             every { mockCollection.document(testNotes[0].id) } returns mockDocumentReference
-            provider.saveNote(testNotes[0]).apply {
-                testNotes[0]
-            }
+            every {mockCollection.document(any()).set(any())} returns mockk()
+            provider.saveNote(testNotes[0])
 
             verify(exactly = 1) { mockDocumentReference.set(testNotes[0]) }
         }

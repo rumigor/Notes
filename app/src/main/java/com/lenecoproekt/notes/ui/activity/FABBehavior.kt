@@ -23,6 +23,7 @@ class FABBehavior (context: Context, attributeSet: AttributeSet)
             child, directTargetChild, target, axes, type)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onNestedScroll(coordinatorLayout: CoordinatorLayout,
                                 child: FloatingActionButton,
                                 target: View,

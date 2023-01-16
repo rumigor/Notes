@@ -41,11 +41,11 @@ class FireStoreProvider(
                             NoteResult.Success(notes.sortedByDescending { note -> note?.lastChanged })
                         }
 
-                        value?.let { offer(it) }
+                        value?.let { trySend(it).isSuccess }
                     }
 
             } catch (e: Throwable) {
-                offer(NoteResult.Error(e))
+                trySend(NoteResult.Error(e)).isSuccess
             }
             invokeOnClose { registration?.remove() }
         }

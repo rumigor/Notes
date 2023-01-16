@@ -11,7 +11,6 @@ import com.lenecoproekt.notes.R
 import com.lenecoproekt.notes.data.NoAuthException
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.consumeEach
-import kotlinx.coroutines.flow.consumeAsFlow
 import kotlin.coroutines.CoroutineContext
 
 private const val RC_SIGN_IN = 777
@@ -64,6 +63,7 @@ abstract class BaseActivity<T> : AppCompatActivity(), CoroutineScope {
         )
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RC_SIGN_IN && resultCode != Activity.RESULT_OK) {

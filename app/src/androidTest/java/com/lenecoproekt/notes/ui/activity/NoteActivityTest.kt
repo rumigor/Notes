@@ -15,6 +15,8 @@ import com.lenecoproekt.notes.model.Note
 import com.lenecoproekt.notes.ui.getColorInt
 import com.lenecoproekt.notes.viewmodel.NoteViewModel
 import io.mockk.*
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.runBlocking
 import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.not
 import org.junit.After
@@ -27,6 +29,7 @@ import org.koin.core.context.loadKoinModules
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
+import kotlin.coroutines.coroutineContext
 
 class NoteActivityTest {
 
