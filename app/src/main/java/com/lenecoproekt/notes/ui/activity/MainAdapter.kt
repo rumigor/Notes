@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.lenecoproekt.notes.R
 import com.lenecoproekt.notes.databinding.ItemNoteBinding
 import com.lenecoproekt.notes.model.Note
+import com.lenecoproekt.notes.ui.format
 import com.lenecoproekt.notes.ui.getColorInt
 
 interface OnItemClickListener {
@@ -53,8 +54,10 @@ class MainAdapter(private val onItemClickListener: OnItemClickListener) :
             with(note) {
                 ui.title.text = this.title
                 ui.body.text = this.note
-                ui.title.setTextColor(this.textColor.getColorInt(itemView.context))
+                ui.timeStamp.text = this.lastChanged.format()
+                ui.title.setTextColor(this.titleColor.getColorInt(itemView.context))
                 ui.body.setTextColor(this.textColor.getColorInt(itemView.context))
+                ui.timeStamp.setTextColor(this.titleColor.getColorInt(itemView.context))
                 ui.container.setCardBackgroundColor(this.color.getColorInt(itemView.context))
                 itemView.setOnClickListener { onItemClickListener.onItemClick(this) }
             }

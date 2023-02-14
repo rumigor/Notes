@@ -1,33 +1,26 @@
 package com.lenecoproekt.notes.ui.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import android.speech.RecognizerIntent
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.widget.AdapterView
-import android.widget.AdapterView.OnItemSelectedListener
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.graphics.ColorUtils
-import androidx.lifecycle.ViewModelProvider
 import com.lenecoproekt.notes.R
 import com.lenecoproekt.notes.databinding.ActivityNoteBinding
 import com.lenecoproekt.notes.model.Color
 import com.lenecoproekt.notes.model.Note
 import com.lenecoproekt.notes.ui.base.BaseActivity
-import com.lenecoproekt.notes.ui.format
 import com.lenecoproekt.notes.ui.getColorInt
-import com.lenecoproekt.notes.ui.getColorRes
-import com.lenecoproekt.notes.viewmodel.MainViewModel
 import com.lenecoproekt.notes.viewmodel.NoteViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 import java.util.*
 
@@ -49,6 +42,8 @@ class NoteActivity : BaseActivity<Data>() {
     private var note: Note? = null
     private var color: Color = Color.YELLOW
     private var textColor: Color = Color.BLACK
+    private var titleColor: Color = Color.BLACK
+    private val REQUESTSPEECHCODE = 100
     override val ui: ActivityNoteBinding by lazy { ActivityNoteBinding.inflate(layoutInflater) }
     override val viewModel: NoteViewModel by viewModel()
     private val textChangeListener = object : TextWatcher {
@@ -79,16 +74,25 @@ class NoteActivity : BaseActivity<Data>() {
 
         ui.colorPicker.onColorClickListener = {
             if (changeTextColor) {
-                textColor = it
-                ui.titleEdit.setTextColor(it.getColorInt(this@NoteActivity))
-                ui.bodyTextEdit.setTextColor(it.getColorInt(this@NoteActivity))
+                var newColor = it
+                if (ui.titleEdit.isFocused) {
+                    ui.titleEdit.setTextColor(it.getColorInt(this@NoteActivity))
+                    ui.colorPicker.close()
+                    titleColor = newColor
+                }
+                if (ui.bodyTextEdit.isFocused) {
+                    ui.bodyTextEdit.setTextColor(it.getColorInt(this@NoteActivity))
+                    ui.colorPicker.close()
+                    textColor = newColor
+                }
                 triggerSaveNote()
             } else {
                 color = it
                 ui.titleEdit.setBackgroundColor(it.getColorInt(this@NoteActivity))
                 ui.bodyTextEdit.setBackgroundColor(it.getColorInt(this@NoteActivity))
                 ui.noteContainer.setBackgroundColor(it.getColorInt(this@NoteActivity))
-                setToolbarColor(it)
+//                setToolbarColor(it)
+                ui.colorPicker.close()
                 triggerSaveNote()
             }
         }
@@ -105,12 +109,13 @@ class NoteActivity : BaseActivity<Data>() {
             if (note != ui.bodyTextEdit.text.toString()) {
                 ui.bodyTextEdit.setText(note)
             }
-            ui.titleEdit.setTextColor(textColor.getColorInt(this@NoteActivity))
+            ui.titleEdit.setTextColor(titleColor.getColorInt(this@NoteActivity))
             ui.titleEdit.setBackgroundColor(color.getColorInt(this@NoteActivity))
+            ui.bodyTextEdit.setTextColor(textColor.getColorInt(this@NoteActivity))
             ui.noteContainer.setBackgroundColor(color.getColorInt(this@NoteActivity))
             setEditListener()
-            supportActionBar?.title = lastChanged.format()
-            setToolbarColor(color)
+            supportActionBar?.title = title
+//            setToolbarColor(color)
         }
     }
 
@@ -142,7 +147,41 @@ class NoteActivity : BaseActivity<Data>() {
         R.id.palette -> togglePalette(false).let { true }
         R.id.textPalette -> togglePalette(true).let { true }
         R.id.delete -> removeNote().let { true }
+        R.id.voice_to_text -> speak().let {true}
         else -> super.onOptionsItemSelected(item)
+    }
+
+    private fun speak() {
+        val recordText = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+        recordText.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+        recordText.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+        recordText.putExtra(RecognizerIntent.EXTRA_PROMPT, "Please, speak something")
+
+        try {
+            startActivityForResult(recordText, REQUESTSPEECHCODE)
+
+        } catch (e: Throwable){
+            Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when(requestCode){
+            REQUESTSPEECHCODE-> {
+                if (resultCode == Activity.RESULT_OK && null != data){
+                    var result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                    result?.let{
+                        if (ui.titleEdit.isFocused) {
+                            ui.titleEdit.setText(result[0])
+                        } else {
+                            ui.bodyTextEdit.setText(result[0])
+                        }
+                    }
+                    triggerSaveNote()
+                }
+            }
+        }
     }
 
     private fun togglePalette(textColor: Boolean) {
@@ -173,7 +212,8 @@ class NoteActivity : BaseActivity<Data>() {
                 note = ui.bodyTextEdit.text.toString(),
                 lastChanged = Date(),
                 color = color,
-                textColor = textColor
+                textColor = textColor,
+                titleColor = titleColor
             ) ?: createNewNote()
             note?.let { viewModel.saveChanges(it) }
         }
@@ -184,7 +224,8 @@ class NoteActivity : BaseActivity<Data>() {
         ui.titleEdit.text.toString(),
         ui.bodyTextEdit.text.toString(),
         color = color,
-        textColor = textColor
+        textColor = textColor,
+        titleColor = titleColor
     )
 
     override fun renderData(data: Data) {
@@ -192,6 +233,7 @@ class NoteActivity : BaseActivity<Data>() {
         this.note = data.note
         data.note?.let { color = it.color }
         data.note?.let { textColor = it.textColor }
+        data.note?.let { titleColor = it.titleColor}
         initView()
     }
 

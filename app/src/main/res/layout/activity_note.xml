@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/note_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/note_container">
+    android:background="#FFF59D">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
@@ -46,7 +47,7 @@
                 android:id="@+id/titleEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#FFFFFF"
+                android:background="#FFF59D"
                 android:textColor="@android:color/black" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -57,7 +58,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/note_body_margin_top"
             android:background="@null"
-            android:hint="@string/note_text" />
+            android:hint="@string/note_text"
+            android:inputType="textMultiLine" />
     </LinearLayout>
 
 

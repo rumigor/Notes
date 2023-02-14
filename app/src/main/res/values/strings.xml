@@ -18,6 +18,7 @@
     <string name="delete_menu_title">Remove note</string>
     <string name="delete_dialog_message">Are you sure?</string>
     <string name="change_text_color">Change text color</string>
+    <string name="record_text">Record text</string>
 
 
     <string-array name="spinner_array">

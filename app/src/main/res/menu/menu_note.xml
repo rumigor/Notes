@@ -4,16 +4,20 @@
     <item android:id="@+id/palette"
         android:title="@string/change_color_menu_title"
         android:icon="@drawable/ic_baseline_palette_24"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always"/>
 
     <item android:id="@+id/textPalette"
         android:title="@string/change_text_color"
         android:icon="@drawable/ic_baseline_text_format_24"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always"/>
 
     <item android:id="@+id/delete"
         android:title="@string/delete_menu_title"
         android:icon="@drawable/ic_baseline_delete_forever_24"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always"/>
+    <item android:id="@+id/voice_to_text"
+        android:title="@string/record_text"
+        android:icon="@drawable/baseline_mic_24"
+        app:showAsAction="always"/>
 
 </menu>

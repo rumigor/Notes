@@ -29,8 +29,14 @@
             android:id="@+id/body"
             style="@style/TextAppearance.AppCompat"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_margin="@dimen/margin"
             tools:text="Я Kotlin бы выучил только за то, что на нем разрабатывал Вортон!"/>
+
+        <TextView
+            android:id="@+id/timeStamp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

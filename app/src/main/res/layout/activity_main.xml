@@ -17,8 +17,9 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:layout_scrollFlags="scroll|enterAlways"
             app:title="@string/appTitle"
-            app:layout_scrollFlags="scroll|enterAlways" />
+            app:titleTextColor="#FEFEFE" />
     </com.google.android.material.appbar.AppBarLayout>
 
 
@@ -26,10 +27,11 @@
         android:id="@+id/mainRecycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#F4ECA6"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:spanCount="2"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:listitem="@layout/item_note"/>
+        app:spanCount="2"
+        tools:listitem="@layout/item_note" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
@@ -37,11 +39,11 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/fab_magin"
         android:layout_marginBottom="@dimen/fab_magin"
-        android:backgroundTint="#FFECB3"
+        android:backgroundTint="#4CAF50"
         android:backgroundTintMode="add"
         android:contentDescription="@string/create_new_note"
         android:focusable="true"
-        app:backgroundTint="#FFF176"
+        app:backgroundTint="#4CAF50"
         app:fabSize="normal"
         app:layout_anchor="@id/mainRecycler"
         app:layout_anchorGravity="bottom|end"
